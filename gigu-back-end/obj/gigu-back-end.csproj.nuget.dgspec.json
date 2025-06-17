@@ -1,25 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\vr700\\RiderProjects\\gigu-back-end\\gigu-back-end\\gigu-back-end.csproj": {}
+    "C:\\Users\\grssc\\OneDrive\\Escritorio\\TEST\\gigu-back-end\\gigu-back-end.csproj": {}
   },
   "projects": {
-    "C:\\Users\\vr700\\RiderProjects\\gigu-back-end\\gigu-back-end\\gigu-back-end.csproj": {
+    "C:\\Users\\grssc\\OneDrive\\Escritorio\\TEST\\gigu-back-end\\gigu-back-end.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\vr700\\RiderProjects\\gigu-back-end\\gigu-back-end\\gigu-back-end.csproj",
+        "projectUniqueName": "C:\\Users\\grssc\\OneDrive\\Escritorio\\TEST\\gigu-back-end\\gigu-back-end.csproj",
         "projectName": "gigu-back-end",
-        "projectPath": "C:\\Users\\vr700\\RiderProjects\\gigu-back-end\\gigu-back-end\\gigu-back-end.csproj",
-        "packagesPath": "C:\\Users\\vr700\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\vr700\\RiderProjects\\gigu-back-end\\gigu-back-end\\obj\\",
+        "projectPath": "C:\\Users\\grssc\\OneDrive\\Escritorio\\TEST\\gigu-back-end\\gigu-back-end.csproj",
+        "packagesPath": "C:\\Users\\grssc\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\grssc\\OneDrive\\Escritorio\\TEST\\gigu-back-end\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\vr700\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\grssc\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -38,7 +40,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net9.0": {
@@ -104,7 +106,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Users\\grssc\\.dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

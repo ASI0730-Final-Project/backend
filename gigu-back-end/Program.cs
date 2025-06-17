@@ -10,70 +10,94 @@ using gigu_back_end.User.Domain.Models.Validadors;
 using gigu_back_end.User.Domain.Services;
 using gigu_back_end.User.Domain.Models.Exceptions;
 using gigu_back_end.User.Infrastructure.Persistence.EFC.Repositories;
+using Gigs.Domain.Models.Entities;
+using Gigs.Domain.Services;
+using Gigs.Infrastructure.Persistence.EFC.Repositories;
+using Gigs.Application.CommandService;
+using Gigs.Application.QueryService;
+using Gigs.Domain;
+using Gigs.Domain.Models.Validators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configuración básica
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 
+// Configuración de la base de datos
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 if (connectionString is null)
     throw new Exception("Database connection string is not set.");
 
-if (builder.Environment.IsDevelopment())
+builder.Services.AddDbContext<GigUContext>(options =>
 {
-    builder.Services.AddDbContext<GigUContext>(options =>
+    options.UseMySQL(connectionString);
+    
+    if (builder.Environment.IsDevelopment())
     {
-        options.UseMySQL(connectionString)
-            .LogTo(Console.WriteLine, LogLevel.Information)
-            .EnableSensitiveDataLogging()
-            .EnableDetailedErrors();
-    });
-}
-else if (builder.Environment.IsProduction())
-{
-    builder.Services.AddDbContext<GigUContext>(options =>
+        options.LogTo(Console.WriteLine, LogLevel.Information)
+               .EnableSensitiveDataLogging()
+               .EnableDetailedErrors();
+    }
+    else
     {
-        options.UseMySQL(connectionString)
-            .LogTo(Console.WriteLine, LogLevel.Error)
-            .EnableDetailedErrors();
-    });
-}
+        options.LogTo(Console.WriteLine, LogLevel.Error)
+               .EnableDetailedErrors();
+    }
+});
 
-// Shared
+// --- [Shared Services] ---
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-// Users
+// --- [Users Bounded Context] ---
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserQueryService, UserQueryService>();
 builder.Services.AddScoped<IUserCommandService, UserCommandService>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateUserCommandValidator>();
 
-builder.WebHost.UseUrls("http://localhost:5000");
+// --- [Gigs Bounded Context] ---
+// Repositories
+builder.Services.AddScoped<IGigRepository, GigRepository>();
 
+// Domain Services
+builder.Services.AddScoped<IGigDomainService, GigDomainService>();
+
+// Application Services
+builder.Services.AddScoped<GigCommandService>();
+builder.Services.AddScoped<GigQueryService>();
+
+// Validators
+builder.Services.AddValidatorsFromAssemblyContaining<CreateGigCommandValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<UpdateGigCommandValidator>();
+
+// Configuración de Swagger
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
-        Title = "Learning Center app",
-        Description = "API for managing users in a learning platform",
-        Contact = new OpenApiContact { Name = "Naldo", Email = "naldo@example.com" },
-        License = new OpenApiLicense { Name = "Example License" }
+        Title = "GigU Platform API",
+        Description = "API for managing Users and Gigs",
+        Contact = new OpenApiContact { Name = "Your Name", Email = "contact@example.com" },
+        License = new OpenApiLicense { Name = "MIT License" }
     });
 
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
+builder.WebHost.UseUrls("http://localhost:5000");
+
 var app = builder.Build();
 
+// Configuración del pipeline HTTP
 app.UseSwagger();
 app.UseSwaggerUI();
 
+// Aplicar migraciones
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
