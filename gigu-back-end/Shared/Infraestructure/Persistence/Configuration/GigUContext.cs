@@ -53,7 +53,7 @@ namespace gigu_back_end.Shared.Infrastructure.Persistence.Configuration
                     .HasMaxLength(255);
             });
 
-            // Gig Configuration (completa con tus Data Annotations)
+            // Gig Configuration
             builder.Entity<Gig>(entity =>
             {
                 entity.ToTable("Gigs");
@@ -61,41 +61,40 @@ namespace gigu_back_end.Shared.Infrastructure.Persistence.Configuration
 
                 entity.Property(g => g.Title)
                     .IsRequired()
-                    .HasMaxLength(200); // Coincide con [StringLength(200)]
+                    .HasMaxLength(200);
 
                 entity.Property(g => g.Description)
                     .IsRequired()
-                    .HasMaxLength(2000); // Coincide con [StringLength(2000)]
+                    .HasMaxLength(2000);
 
                 entity.Property(g => g.Price)
                     .IsRequired()
                     .HasColumnType("decimal(18,2)")
-                    .HasPrecision(18, 2); // Para el rango decimal
+                    .HasPrecision(18, 2);
 
+                // 👇 Cambiado: valor por defecto se da en C#
                 entity.Property(g => g.CreatedAt)
                     .IsRequired()
-                    .HasDefaultValueSql("UTC_TIMESTAMP()"); // Usa función de MySQL
+                    .HasDefaultValue(DateTime.UtcNow);
 
                 entity.Property(g => g.Category)
                     .IsRequired()
-                    .HasMaxLength(100); // Coincide con [StringLength(100)]
+                    .HasMaxLength(100);
 
                 entity.Property(g => g.DeliveryDays)
                     .IsRequired();
 
-                // Relación con User (configuración explícita)
                 entity.HasOne<User.Domain.Models.Entities.User>()
                     .WithMany()
                     .HasForeignKey(g => g.UserId)
-                    .OnDelete(DeleteBehavior.Restrict); // Previene borrado en cascada
+                    .OnDelete(DeleteBehavior.Restrict);
 
-                // Índices para mejor performance
                 entity.HasIndex(g => g.UserId);
                 entity.HasIndex(g => g.Category);
                 entity.HasIndex(g => g.CreatedAt);
             });
 
-            // Pull Configuration (existente)
+            // Pull Configuration
             builder.Entity<Pull>(entity =>
             {
                 entity.ToTable("Pulls");
@@ -108,8 +107,8 @@ namespace gigu_back_end.Shared.Infrastructure.Persistence.Configuration
                 entity.Property(p => p.PriceUpdate).HasColumnType("decimal(10,2)");
                 entity.Property(p => p.State).IsRequired().HasMaxLength(20);
             });
-            
-            // Chat Configuration (existente)
+
+            // Chat Configuration
             builder.Entity<Chat>(entity =>
             {
                 entity.HasKey(c => c.Id);
