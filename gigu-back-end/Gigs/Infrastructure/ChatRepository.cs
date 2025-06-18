@@ -1,0 +1,19 @@
+﻿using Gigs.Domain;
+using Gigs.Domain.Models.Entities;
+using gigu_back_end.Shared.Infraestructure.Persistence.Repositories;
+using gigu_back_end.Shared.Infrastructure.Persistence.Configuration;
+using Microsoft.EntityFrameworkCore;
+
+namespace Gigs.Infrastructure.Persistence.EFC.Repositories;
+
+public class ChatRepository : BaseRepository<Chat>, IChatRepository
+{
+    public ChatRepository(GigUContext context) : base(context) { }
+
+    public async Task<IEnumerable<Chat>> GetChatsByUserIdAsync(int userId)
+    {
+        return await Context.Set<Chat>()
+            .Where(c => c.SenderId == userId || c.ReceiverId == userId)
+            .ToListAsync();
+    }
+}

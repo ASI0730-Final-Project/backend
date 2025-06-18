@@ -8,6 +8,7 @@ namespace gigu_back_end.Shared.Infrastructure.Persistence.Configuration
     {
         public DbSet<User.Domain.Models.Entities.User> Users { get; set; }
         public DbSet<Pull> Pulls { get; set; } // 👈 NUEVO DbSet
+        public DbSet<Chat> Chats { get; set; } // Chat stuff
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
@@ -63,6 +64,14 @@ namespace gigu_back_end.Shared.Infrastructure.Persistence.Configuration
                 entity.Property(p => p.PriceInit).IsRequired().HasColumnType("decimal(10,2)");
                 entity.Property(p => p.PriceUpdate).HasColumnType("decimal(10,2)");
                 entity.Property(p => p.State).IsRequired().HasMaxLength(20);
+            });
+            
+            // Chat Entity Configuration
+            builder.Entity<Chat>(entity =>
+            {
+                entity.HasKey(c => c.Id);
+                entity.Property(c => c.Content).IsRequired().HasMaxLength(1000);
+                entity.Property(c => c.SentAt).IsRequired();
             });
         }
     }

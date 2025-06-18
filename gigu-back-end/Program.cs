@@ -62,10 +62,12 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateUserCommandValidator>
 // Repositories
 builder.Services.AddScoped<IGigRepository, GigRepository>();
 builder.Services.AddScoped<IPullRepository, PullRepository>();
+builder.Services.AddScoped<IChatRepository, ChatRepository>(); // Chat stuff
 
 // Domain Services
 builder.Services.AddScoped<IGigDomainService, GigDomainService>();
 builder.Services.AddScoped<IPullDomainService, PullDomainService>(); // ✅ NUEVO: Registro de dominio Pull
+builder.Services.AddScoped<IChatDomainService, ChatDomainService>(); // Chat stuff
 
 // Application Services
 builder.Services.AddScoped<GigCommandService>();
