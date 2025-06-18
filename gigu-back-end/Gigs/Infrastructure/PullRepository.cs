@@ -1,6 +1,6 @@
 using Gigs.Domain;
 using Gigs.Domain.Models.Entities;
-using gigu_back_end.Shared.Infrastructure.Persistence.Configuration; // ← tu contexto real
+using gigu_back_end.Shared.Infrastructure.Persistence.Configuration;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -21,7 +21,7 @@ namespace Gigs.Infrastructure.Persistence.EFC.Repositories
             return await _context.Pulls.ToListAsync();
         }
 
-        public async Task<Pull> GetByIdAsync(int id)
+        public async Task<Pull?> GetByIdAsync(int id) // ✅ Acepta retorno nulo
         {
             return await _context.Pulls.FindAsync(id);
         }
@@ -31,9 +31,10 @@ namespace Gigs.Infrastructure.Persistence.EFC.Repositories
             await _context.Pulls.AddAsync(pull);
         }
 
-        public async Task UpdateAsync(Pull pull)
+        public Task UpdateAsync(Pull pull) // ✅ No necesita async si no hay await
         {
             _context.Pulls.Update(pull);
+            return Task.CompletedTask;
         }
 
         public async Task SaveChangesAsync()
