@@ -61,6 +61,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateUserCommandValidator>
 // --- [Gigs Bounded Context] ---
 // Repositories
 builder.Services.AddScoped<IGigRepository, GigRepository>();
+builder.Services.AddScoped<IPullRepository, PullRepository>(); // 👈 NUEVO: Registro del repositorio Pull
 
 // Domain Services
 builder.Services.AddScoped<IGigDomainService, GigDomainService>();
@@ -97,7 +98,7 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// Aplicar migraciones
+// Aplicar migraciones (solo EnsureCreated aquí)
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;

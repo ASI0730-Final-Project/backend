@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("gigu-back-end")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+325e74116c77bc3f7fbd3a289268d802aa700d11")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9c0a6b2a9e508dfa206704363d6d556af60dfda8")]
 [assembly: System.Reflection.AssemblyProductAttribute("gigu-back-end")]
 [assembly: System.Reflection.AssemblyTitleAttribute("gigu-back-end")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
