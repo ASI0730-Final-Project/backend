@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\diego\\OneDrive\\Escritorio\\giguBackend\\gigu-back-end\\gigu-back-end.csproj": {}
+    "C:\\Users\\grssc\\OneDrive\\Escritorio\\backend\\gigu-back-end\\gigu-back-end.csproj": {}
   },
   "projects": {
-    "C:\\Users\\diego\\OneDrive\\Escritorio\\giguBackend\\gigu-back-end\\gigu-back-end.csproj": {
+    "C:\\Users\\grssc\\OneDrive\\Escritorio\\backend\\gigu-back-end\\gigu-back-end.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\diego\\OneDrive\\Escritorio\\giguBackend\\gigu-back-end\\gigu-back-end.csproj",
+        "projectUniqueName": "C:\\Users\\grssc\\OneDrive\\Escritorio\\backend\\gigu-back-end\\gigu-back-end.csproj",
         "projectName": "gigu-back-end",
-        "projectPath": "C:\\Users\\diego\\OneDrive\\Escritorio\\giguBackend\\gigu-back-end\\gigu-back-end.csproj",
-        "packagesPath": "C:\\Users\\diego\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\diego\\OneDrive\\Escritorio\\giguBackend\\gigu-back-end\\obj\\",
+        "projectPath": "C:\\Users\\grssc\\OneDrive\\Escritorio\\backend\\gigu-back-end\\gigu-back-end.csproj",
+        "packagesPath": "C:\\Users\\grssc\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\grssc\\OneDrive\\Escritorio\\backend\\gigu-back-end\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\diego\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\grssc\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -110,7 +106,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Users\\grssc\\.dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
