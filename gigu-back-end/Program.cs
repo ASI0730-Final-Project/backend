@@ -35,7 +35,7 @@ if (connectionString is null)
 builder.Services.AddDbContext<GigUContext>(options =>
 {
     options.UseMySQL(connectionString);
-    
+
     if (builder.Environment.IsDevelopment())
     {
         options.LogTo(Console.WriteLine, LogLevel.Information)
@@ -61,10 +61,11 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateUserCommandValidator>
 // --- [Gigs Bounded Context] ---
 // Repositories
 builder.Services.AddScoped<IGigRepository, GigRepository>();
-builder.Services.AddScoped<IPullRepository, PullRepository>(); // 👈 NUEVO: Registro del repositorio Pull
+builder.Services.AddScoped<IPullRepository, PullRepository>();
 
 // Domain Services
 builder.Services.AddScoped<IGigDomainService, GigDomainService>();
+builder.Services.AddScoped<IPullDomainService, PullDomainService>(); // ✅ NUEVO: Registro de dominio Pull
 
 // Application Services
 builder.Services.AddScoped<GigCommandService>();
@@ -90,15 +91,16 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
+// Configurar la URL de escucha
 builder.WebHost.UseUrls("http://localhost:5000");
 
 var app = builder.Build();
 
-// Configuración del pipeline HTTP
+// Middleware y configuración HTTP
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// Aplicar migraciones (solo EnsureCreated aquí)
+// Crear base de datos si no existe (solo para desarrollo rápido)
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;

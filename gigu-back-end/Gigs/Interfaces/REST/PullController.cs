@@ -1,8 +1,9 @@
 using Gigs.Domain;
 using Gigs.Domain.Models.Entities;
+using Gigs.Domain.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Gigs.Interfaces.REST
 {
@@ -10,80 +11,65 @@ namespace Gigs.Interfaces.REST
     [Route("api/[controller]")]
     public class PullController : ControllerBase
     {
-        private readonly IPullRepository _pullRepo;
+        private readonly IPullDomainService _pullDomain;
 
-        public PullController(IPullRepository pullRepo)
+        public PullController(IPullDomainService pullDomain)
         {
-            _pullRepo = pullRepo;
+            _pullDomain = pullDomain;
         }
 
-        // GET: api/pull
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Pull>>> GetAll()
         {
-            var pulls = await _pullRepo.GetAllAsync();
+            var pulls = await _pullDomain.GetAllPullsAsync();
             return Ok(pulls);
         }
 
-        // POST: api/pull
-        [HttpPost]
-        public async Task<ActionResult<Pull>> Create([FromBody] Pull pull)
-        {
-            pull.State = "abierta";
-            await _pullRepo.CreateAsync(pull);
-            await _pullRepo.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetById), new { id = pull.Id }, pull);
-        }
-
-        // GET: api/pull/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<Pull>> GetById(int id)
         {
-            var pull = await _pullRepo.GetByIdAsync(id);
-            if (pull == null) return NotFound();
-
-            return Ok(pull);
+            var pull = await _pullDomain.GetPullByIdAsync(id);
+            return pull is null ? NotFound() : Ok(pull);
         }
 
-        // PUT: api/pull/{id}/update-price
+        [HttpPost]
+        public async Task<ActionResult<Pull>> Create([FromBody] Pull pull)
+        {
+            await _pullDomain.OpenPullAsync(pull);
+            return CreatedAtAction(nameof(GetById), new { id = pull.Id }, pull);
+        }
+
         [HttpPut("{id}/update-price")]
         public async Task<IActionResult> UpdatePrice(int id, [FromBody] UpdatePriceRequest request)
         {
-            var pull = await _pullRepo.GetByIdAsync(id);
-            if (pull == null) return NotFound();
-
-            if (pull.State != "abierta")
-                return BadRequest("La subasta ya está cerrada");
-
-            if (request.NewPrice <= pull.PriceUpdate)
-                return BadRequest("El nuevo precio debe ser mayor al actual");
-
-            pull.PriceUpdate = request.NewPrice;
-            await _pullRepo.UpdateAsync(pull);
-            await _pullRepo.SaveChangesAsync();
-            return Ok(pull);
+            try
+            {
+                var updatedPull = await _pullDomain.UpdatePullPriceAsync(id, request.NewPrice);
+                return Ok(updatedPull);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
-        // PUT: api/pull/{id}/close
         [HttpPut("{id}/close")]
         public async Task<IActionResult> Close(int id)
         {
-            var pull = await _pullRepo.GetByIdAsync(id);
-            if (pull == null) return NotFound();
-
-            if (pull.State == "cerrada")
-                return BadRequest("La subasta ya está cerrada");
-
-            pull.State = "cerrada";
-            await _pullRepo.UpdateAsync(pull);
-            await _pullRepo.SaveChangesAsync();
-            return Ok(pull);
+            try
+            {
+                var closedPull = await _pullDomain.ClosePullAsync(id);
+                return Ok(closedPull);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
-    }
 
-    // DTO para actualizar el precio
-    public class UpdatePriceRequest
-    {
-        public decimal NewPrice { get; set; }
+        public class UpdatePriceRequest
+        {
+            public decimal NewPrice { get; set; }
+        }
     }
 }
