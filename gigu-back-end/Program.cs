@@ -57,6 +57,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserQueryService, UserQueryService>();
 builder.Services.AddScoped<IUserCommandService, UserCommandService>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateUserCommandValidator>();
+builder.Services.AddScoped<IChatQueryService, ChatQueryService>(); // Chat Stuff
 
 // --- [Gigs Bounded Context] ---
 // Repositories
