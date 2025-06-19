@@ -54,10 +54,15 @@ namespace gigu_back_end.Shared.Infrastructure.Persistence.Configuration
             });
 
             // Gig Configuration
+            // En OnModelCreating:
             builder.Entity<Gig>(entity =>
             {
                 entity.ToTable("Gigs");
                 entity.HasKey(g => g.Id);
+
+                entity.Property(g => g.Image)
+                    .IsRequired()
+                    .HasColumnType("LONGTEXT"); 
 
                 entity.Property(g => g.Title)
                     .IsRequired()
@@ -67,31 +72,38 @@ namespace gigu_back_end.Shared.Infrastructure.Persistence.Configuration
                     .IsRequired()
                     .HasMaxLength(2000);
 
-                entity.Property(g => g.Price)
-                    .IsRequired()
-                    .HasColumnType("decimal(18,2)")
-                    .HasPrecision(18, 2);
+                entity.Property(g => g.SellerId) 
+                    .IsRequired();
 
-                // 👇 Cambiado: valor por defecto se da en C#
-                entity.Property(g => g.CreatedAt)
-                    .IsRequired()
-                    .HasDefaultValue(DateTime.UtcNow);
+                entity.Property(g => g.Price)
+                    .HasColumnType("decimal(18,2)");
+
+                entity.Property(g => g.Tags)
+                    .HasConversion(
+                        v => string.Join(',', v), 
+                        v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList()
+                    )
+                    .HasColumnType("TEXT");
 
                 entity.Property(g => g.Category)
                     .IsRequired()
                     .HasMaxLength(100);
 
-                entity.Property(g => g.DeliveryDays)
-                    .IsRequired();
+                entity.Property(g => g.ExtraFeatures)
+                    .HasConversion(
+                        v => string.Join(',', v),
+                        v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList()
+                    )
+                    .HasColumnType("TEXT");
 
-                entity.HasOne<User.Domain.Models.Entities.User>()
-                    .WithMany()
-                    .HasForeignKey(g => g.UserId)
-                    .OnDelete(DeleteBehavior.Restrict);
+                entity.Property(e => e.CreatedAt)
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .ValueGeneratedOnAdd();
 
-                entity.HasIndex(g => g.UserId);
+                // Índices
+                entity.HasIndex(g => g.SellerId);
                 entity.HasIndex(g => g.Category);
-                entity.HasIndex(g => g.CreatedAt);
+                entity.HasIndex(g => new { g.IsResponsive, g.CustomAnimations });
             });
 
             // Pull Configuration

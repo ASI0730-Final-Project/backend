@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\grssc\\OneDrive\\Escritorio\\backend\\gigu-back-end\\gigu-back-end.csproj": {}
+    "C:\\Users\\grssc\\OneDrive\\Escritorio\\TEST\\gigu-back-end\\gigu-back-end.csproj": {}
   },
   "projects": {
-    "C:\\Users\\grssc\\OneDrive\\Escritorio\\backend\\gigu-back-end\\gigu-back-end.csproj": {
+    "C:\\Users\\grssc\\OneDrive\\Escritorio\\TEST\\gigu-back-end\\gigu-back-end.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\grssc\\OneDrive\\Escritorio\\backend\\gigu-back-end\\gigu-back-end.csproj",
+        "projectUniqueName": "C:\\Users\\grssc\\OneDrive\\Escritorio\\TEST\\gigu-back-end\\gigu-back-end.csproj",
         "projectName": "gigu-back-end",
-        "projectPath": "C:\\Users\\grssc\\OneDrive\\Escritorio\\backend\\gigu-back-end\\gigu-back-end.csproj",
+        "projectPath": "C:\\Users\\grssc\\OneDrive\\Escritorio\\TEST\\gigu-back-end\\gigu-back-end.csproj",
         "packagesPath": "C:\\Users\\grssc\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\grssc\\OneDrive\\Escritorio\\backend\\gigu-back-end\\obj\\",
+        "outputPath": "C:\\Users\\grssc\\OneDrive\\Escritorio\\TEST\\gigu-back-end\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\grssc\\AppData\\Roaming\\NuGet\\NuGet.Config",

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "jhMtnxQnnrk=",
+  "dgSpecHash": "3m/v/IZn4rk=",
   "success": true,
-  "projectFilePath": "C:\\Users\\grssc\\OneDrive\\Escritorio\\backend\\gigu-back-end\\gigu-back-end.csproj",
+  "projectFilePath": "C:\\Users\\grssc\\OneDrive\\Escritorio\\TEST\\gigu-back-end\\gigu-back-end.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\grssc\\.nuget\\packages\\bouncycastle.cryptography\\2.5.1\\bouncycastle.cryptography.2.5.1.nupkg.sha512",
     "C:\\Users\\grssc\\.nuget\\packages\\entityframeworkcore.createdupdateddate\\8.0.0\\entityframeworkcore.createdupdateddate.8.0.0.nupkg.sha512",
