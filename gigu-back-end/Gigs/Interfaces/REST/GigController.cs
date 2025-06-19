@@ -5,9 +5,6 @@ using Gigs.Domain.Models.Exceptions;
 using Gigs.Domain.Models.Queries;
 using Gigs.Interfaces.REST.Resources;
 using Gigs.Interfaces.REST.Transform;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Gigs.Interfaces.REST.Controllers
 {
@@ -37,11 +34,14 @@ namespace Gigs.Interfaces.REST.Controllers
             }
             catch (GigValidationException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new { message = ex.Message, errors = ex.ValidationErrors });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while creating the gig", details = ex.Message });
+                return StatusCode(500, new { 
+                    message = "An error occurred while creating the gig", 
+                    details = ex.Message 
+                });
             }
         }
 
@@ -62,44 +62,80 @@ namespace Gigs.Interfaces.REST.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while retrieving the gig", details = ex.Message });
+                return StatusCode(500, new { 
+                    message = "An error occurred while retrieving the gig", 
+                    details = ex.Message 
+                });
             }
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GigResource>>> GetAllGigs(
             [FromQuery] int page = 1, 
-            [FromQuery] int pageSize = 10, 
-            [FromQuery] string searchTerm = "")
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string searchTerm = "",
+            [FromQuery] decimal? minPrice = null,
+            [FromQuery] decimal? maxPrice = null,
+            [FromQuery] int? maxDeliveryDays = null,
+            [FromQuery] string sortBy = "createdAt",
+            [FromQuery] bool descending = true)
         {
             try
             {
-                var query = new GetAllGigsQuery(page, pageSize, searchTerm);
-                var gigs = await _gigQueryService.GetAllGigsAsync(query);
-                var resources = GigResourceFromEntityAssembler.ToResourceFromEntity(gigs);
+                var query = new GetAllGigsQuery(
+                    page, 
+                    pageSize, 
+                    searchTerm,
+                    minPrice,
+                    maxPrice,
+                    maxDeliveryDays,
+                    sortBy,
+                    descending);
+
+                var (gigs, totalCount) = await _gigQueryService.GetAllGigsAsync(query);
+                var resources = GigResourceFromEntityAssembler.ToResourceFromEntities(gigs);
                 
-                return Ok(resources);
+                return Ok(new {
+                    data = resources,
+                    total = totalCount,
+                    page,
+                    pageSize
+                });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while retrieving gigs", details = ex.Message });
+                return StatusCode(500, new { 
+                    message = "An error occurred while retrieving gigs", 
+                    details = ex.Message 
+                });
             }
         }
 
-        [HttpGet("user/{userId}")]
-        public async Task<ActionResult<IEnumerable<GigResource>>> GetGigsByUserId(int userId)
+        [HttpGet("seller/{sellerId}")]
+        public async Task<ActionResult<IEnumerable<GigResource>>> GetGigsBySellerId(
+            int sellerId,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
         {
             try
             {
-                var query = new GetGigsByUserIdQuery(userId);
-                var gigs = await _gigQueryService.GetGigsByUserIdAsync(query);
-                var resources = GigResourceFromEntityAssembler.ToResourceFromEntity(gigs);
-                
-                return Ok(resources);
+                var query = new GetGigsBySellerIdQuery(sellerId, page, pageSize);
+                var (gigs, totalCount) = await _gigQueryService.GetGigsBySellerIdAsync(query);
+                var resources = GigResourceFromEntityAssembler.ToResourceFromEntities(gigs);
+        
+                return Ok(new {
+                    data = resources,
+                    total = totalCount,
+                    page,
+                    pageSize
+                });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while retrieving user's gigs", details = ex.Message });
+                return StatusCode(500, new { 
+                    message = "An error occurred while retrieving seller's gigs", 
+                    details = ex.Message 
+                });
             }
         }
 
@@ -107,19 +143,61 @@ namespace Gigs.Interfaces.REST.Controllers
         public async Task<ActionResult<IEnumerable<GigResource>>> GetGigsByCategory(
             string category, 
             [FromQuery] int page = 1, 
+            [FromQuery] int pageSize = 10,
+            [FromQuery] bool? isResponsive = null)
+        {
+            try
+            {
+                var query = new GetGigsByCategoryQuery(
+                    category, 
+                    page, 
+                    pageSize,
+                    isResponsive);
+
+                var (gigs, totalCount) = await _gigQueryService.GetGigsByCategoryAsync(query);
+                var resources = GigResourceFromEntityAssembler.ToResourceFromEntities(gigs);
+                
+                return Ok(new {
+                    data = resources,
+                    total = totalCount,
+                    page,
+                    pageSize
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { 
+                    message = "An error occurred while retrieving gigs by category", 
+                    details = ex.Message 
+                });
+            }
+        }
+
+        [HttpGet("tags")]
+        public async Task<ActionResult<IEnumerable<GigResource>>> GetGigsByTags(
+            [FromQuery] List<string> tags,
+            [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10)
         {
             try
             {
-                var query = new GetGigsByCategoryQuery(category, page, pageSize);
-                var gigs = await _gigQueryService.GetGigsByCategoryAsync(query);
-                var resources = GigResourceFromEntityAssembler.ToResourceFromEntity(gigs);
-                
-                return Ok(resources);
+                var query = new GetGigsByTagsQuery(tags, page, pageSize);
+                var (gigs, totalCount) = await _gigQueryService.GetGigsByTagsAsync(query);
+                var resources = GigResourceFromEntityAssembler.ToResourceFromEntities(gigs);
+        
+                return Ok(new {
+                    data = resources,
+                    total = totalCount,
+                    page,
+                    pageSize
+                });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while retrieving gigs by category", details = ex.Message });
+                return StatusCode(500, new { 
+                    message = "An error occurred while retrieving gigs by tags", 
+                    details = ex.Message 
+                });
             }
         }
 
@@ -140,24 +218,27 @@ namespace Gigs.Interfaces.REST.Controllers
             }
             catch (GigValidationException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new { message = ex.Message, errors = ex.ValidationErrors });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while updating the gig", details = ex.Message });
+                return StatusCode(500, new { 
+                    message = "An error occurred while updating the gig", 
+                    details = ex.Message 
+                });
             }
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteGig(int id, [FromQuery] int userId)
+        public async Task<ActionResult> DeleteGig(int id, [FromQuery] int sellerId)
         {
             try
             {
-                var result = await _gigCommandService.DeleteGigAsync(id, userId);
-                if (result)
-                {
-                    return NoContent();
-                }
+                await _gigCommandService.DeleteGigAsync(id, sellerId);
+                return NoContent();
+            }
+            catch (GigNotFoundException)
+            {
                 return NotFound(new { message = $"Gig with id {id} not found" });
             }
             catch (GigValidationException ex)
@@ -166,7 +247,10 @@ namespace Gigs.Interfaces.REST.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while deleting the gig", details = ex.Message });
+                return StatusCode(500, new { 
+                    message = "An error occurred while deleting the gig", 
+                    details = ex.Message 
+                });
             }
         }
 
@@ -180,21 +264,27 @@ namespace Gigs.Interfaces.REST.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while getting gig count", details = ex.Message });
+                return StatusCode(500, new { 
+                    message = "An error occurred while getting gig count", 
+                    details = ex.Message 
+                });
             }
         }
 
-        [HttpGet("stats/user/{userId}/count")]
-        public async Task<ActionResult<int>> GetGigCountByUserId(int userId)
+        [HttpGet("stats/seller/{sellerId}/count")]
+        public async Task<ActionResult<int>> GetGigCountBySellerId(int sellerId)
         {
             try
             {
-                var count = await _gigQueryService.GetGigCountByUserIdAsync(userId);
+                var count = await _gigQueryService.GetGigCountBySellerIdAsync(sellerId);
                 return Ok(count);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while getting user's gig count", details = ex.Message });
+                return StatusCode(500, new { 
+                    message = "An error occurred while getting seller's gig count", 
+                    details = ex.Message 
+                });
             }
         }
 
@@ -208,9 +298,11 @@ namespace Gigs.Interfaces.REST.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while checking gig existence", details = ex.Message });
+                return StatusCode(500, new { 
+                    message = "An error occurred while checking gig existence", 
+                    details = ex.Message 
+                });
             }
         }
     }
 }
-             
