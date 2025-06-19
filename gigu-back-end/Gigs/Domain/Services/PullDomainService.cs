@@ -1,5 +1,4 @@
 using Gigs.Domain.Models.Entities;
-using Gigs.Domain.Services;
 using Gigs.Domain;
 using System;
 using System.Collections.Generic;
@@ -27,13 +26,14 @@ namespace Gigs.Domain.Services
         public async Task<Pull> UpdatePullPriceAsync(int pullId, decimal newPrice)
         {
             var pull = await _pullRepo.GetByIdAsync(pullId);
-            if (pull == null) throw new Exception("Pull no encontrado");
+            if (pull == null)
+                throw new Exception("Pull no encontrado");
 
             if (pull.State != "abierta")
                 throw new Exception("La subasta ya está cerrada");
 
-            if (newPrice <= pull.PriceUpdate)
-                throw new Exception("El nuevo precio debe ser mayor al actual");
+            if (newPrice <= 0)
+                throw new Exception("El nuevo precio debe ser mayor que cero.");
 
             pull.PriceUpdate = newPrice;
             await _pullRepo.UpdateAsync(pull);
@@ -45,7 +45,8 @@ namespace Gigs.Domain.Services
         public async Task<Pull> ClosePullAsync(int pullId)
         {
             var pull = await _pullRepo.GetByIdAsync(pullId);
-            if (pull == null) throw new Exception("Pull no encontrado");
+            if (pull == null)
+                throw new Exception("Pull no encontrado");
 
             if (pull.State == "cerrada")
                 throw new Exception("La subasta ya está cerrada");
