@@ -6,6 +6,7 @@ using Gigs.Domain;
 using Gigs.Domain.Services;
 using FluentValidation;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Gigs.Application.CommandService
 {
@@ -38,7 +39,7 @@ namespace Gigs.Application.CommandService
             }
 
             // Validaciones de dominio
-            if (!await _gigDomainService.IsUserActiveFreelancerAsync(command.UserId))
+            if (!await _gigDomainService.IsUserActiveFreelancerAsync(command.SellerId))
             {
                 throw new GigValidationException("User is not an active freelancer");
             }
@@ -48,15 +49,24 @@ namespace Gigs.Application.CommandService
                 throw new GigValidationException($"Category '{command.Category}' is not valid");
             }
 
-            // Crear entidad
+            // Crear entidad con todas las nuevas propiedades
             var gig = new Gig(
-                command.Title,
-                command.Description,
-                command.Price,
-                command.UserId,
-                command.Category,
-                command.DeliveryDays
-            );
+                image: command.Image,
+                title: command.Title,
+                description: command.Description,
+                sellerId: command.SellerId,
+                price: command.Price,
+                tags: command.Tags ?? new List<string>(),
+                category: command.Category,
+                deliveryDays: command.DeliveryDays
+            )
+            {
+                IsResponsive = command.IsResponsive,
+                RevisionCount = command.RevisionCount,
+                PageCount = command.PageCount,
+                ExtraFeatures = command.ExtraFeatures ?? new List<string>(),
+                CustomAnimations = command.CustomAnimations
+            };
 
             // Guardar en repositorio
             return await _gigRepository.CreateAsync(gig);
@@ -84,21 +94,28 @@ namespace Gigs.Application.CommandService
                 throw new GigValidationException($"Category '{command.Category}' is not valid");
             }
 
-            // Actualizar propiedades
+            // Actualizar todas las propiedades
+            existingGig.Image = command.Image;
             existingGig.Title = command.Title;
             existingGig.Description = command.Description;
             existingGig.Price = command.Price;
+            existingGig.Tags = command.Tags ?? existingGig.Tags;
             existingGig.Category = command.Category;
             existingGig.DeliveryDays = command.DeliveryDays;
+            existingGig.IsResponsive = command.IsResponsive;
+            existingGig.RevisionCount = command.RevisionCount;
+            existingGig.PageCount = command.PageCount;
+            existingGig.ExtraFeatures = command.ExtraFeatures ?? existingGig.ExtraFeatures;
+            existingGig.CustomAnimations = command.CustomAnimations;
 
             // Guardar cambios
             return await _gigRepository.UpdateAsync(existingGig);
         }
 
-        public async Task<bool> DeleteGigAsync(int gigId, int userId)
+        public async Task<bool> DeleteGigAsync(int gigId, int sellerId)
         {
             // Verificar propiedad del gig
-            if (!await _gigDomainService.ValidateGigOwnershipAsync(gigId, userId))
+            if (!await _gigDomainService.ValidateGigOwnershipAsync(gigId, sellerId))
             {
                 throw new GigValidationException("User is not authorized to delete this gig");
             }

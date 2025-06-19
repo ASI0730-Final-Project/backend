@@ -34,18 +34,19 @@ if (connectionString is null)
 
 builder.Services.AddDbContext<GigUContext>(options =>
 {
-    options.UseMySQL(connectionString);
+    options.UseMySQL(connectionString, mysqlOptions =>
+    {
+        mysqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(30),
+            errorNumbersToAdd: null);
+    });
 
     if (builder.Environment.IsDevelopment())
     {
-        options.LogTo(Console.WriteLine, LogLevel.Information)
-               .EnableSensitiveDataLogging()
-               .EnableDetailedErrors();
-    }
-    else
-    {
-        options.LogTo(Console.WriteLine, LogLevel.Error)
-               .EnableDetailedErrors();
+        options.EnableDetailedErrors()
+            .EnableSensitiveDataLogging()
+            .LogTo(Console.WriteLine, LogLevel.Information);
     }
 });
 
@@ -57,15 +58,18 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserQueryService, UserQueryService>();
 builder.Services.AddScoped<IUserCommandService, UserCommandService>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateUserCommandValidator>();
+builder.Services.AddScoped<IChatQueryService, ChatQueryService>(); // Chat Stuff
 
 // --- [Gigs Bounded Context] ---
 // Repositories
 builder.Services.AddScoped<IGigRepository, GigRepository>();
 builder.Services.AddScoped<IPullRepository, PullRepository>();
+builder.Services.AddScoped<IChatRepository, ChatRepository>(); // Chat stuff
 
 // Domain Services
 builder.Services.AddScoped<IGigDomainService, GigDomainService>();
 builder.Services.AddScoped<IPullDomainService, PullDomainService>(); // ✅ NUEVO: Registro de dominio Pull
+builder.Services.AddScoped<IChatDomainService, ChatDomainService>(); // Chat stuff
 
 // Application Services
 builder.Services.AddScoped<GigCommandService>();

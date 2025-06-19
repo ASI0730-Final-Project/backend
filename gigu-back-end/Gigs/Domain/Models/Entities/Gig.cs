@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Gigs.Domain.Models.Entities
@@ -9,6 +10,9 @@ namespace Gigs.Domain.Models.Entities
         public int Id { get; set; }
 
         [Required]
+        public string Image { get; set; } = string.Empty; // Cambiado a string para base64
+
+        [Required]
         [StringLength(200)]
         public string Title { get; set; } = string.Empty;
 
@@ -17,13 +21,13 @@ namespace Gigs.Domain.Models.Entities
         public string Description { get; set; } = string.Empty;
 
         [Required]
+        public int SellerId { get; set; } // Cambiado de UserId a SellerId
+
+        [Required]
         [Range(0.01, double.MaxValue)]
         public decimal Price { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-        [Required]
-        public int UserId { get; set; }
+        public List<string> Tags { get; set; } = new(); // Nueva propiedad
 
         [Required]
         [StringLength(100)]
@@ -33,17 +37,30 @@ namespace Gigs.Domain.Models.Entities
         [Range(1, 365)]
         public int DeliveryDays { get; set; }
 
-        public Gig() {}
+        public bool IsResponsive { get; set; } // Nueva propiedad
 
-        public Gig(string title, string description, decimal price, int userId, string category, int deliveryDays)
+        public int RevisionCount { get; set; } = 3; // Nueva propiedad con valor por defecto
+
+        public int PageCount { get; set; } // Nueva propiedad
+
+        public List<string> ExtraFeatures { get; set; } = new(); // Nueva propiedad
+
+        public bool CustomAnimations { get; set; } // Nueva propiedad
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        // Constructor actualizado
+        public Gig(string image, string title, string description, int sellerId, 
+            decimal price, List<string> tags, string category, int deliveryDays)
         {
+            Image = image;
             Title = title;
             Description = description;
+            SellerId = sellerId;
             Price = price;
-            UserId = userId;
+            Tags = tags;
             Category = category;
             DeliveryDays = deliveryDays;
-            CreatedAt = DateTime.UtcNow;
         }
     }
 }
