@@ -34,18 +34,19 @@ if (connectionString is null)
 
 builder.Services.AddDbContext<GigUContext>(options =>
 {
-    options.UseMySQL(connectionString);
+    options.UseMySQL(connectionString, mysqlOptions =>
+    {
+        mysqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(30),
+            errorNumbersToAdd: null);
+    });
 
     if (builder.Environment.IsDevelopment())
     {
-        options.LogTo(Console.WriteLine, LogLevel.Information)
-               .EnableSensitiveDataLogging()
-               .EnableDetailedErrors();
-    }
-    else
-    {
-        options.LogTo(Console.WriteLine, LogLevel.Error)
-               .EnableDetailedErrors();
+        options.EnableDetailedErrors()
+            .EnableSensitiveDataLogging()
+            .LogTo(Console.WriteLine, LogLevel.Information);
     }
 });
 
