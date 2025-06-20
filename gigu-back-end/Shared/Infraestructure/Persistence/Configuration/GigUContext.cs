@@ -26,35 +26,16 @@ namespace gigu_back_end.Shared.Infrastructure.Persistence.Configuration
                 entity.ToTable("Users");
                 entity.HasKey(u => u.Id);
 
-                entity.Property(u => u.Name)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(u => u.Lastname)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(u => u.Email)
-                    .IsRequired()
-                    .HasMaxLength(100);
-
-                entity.HasIndex(u => u.Email)
-                    .IsUnique();
-
-                entity.Property(u => u.Password)
-                    .IsRequired()
-                    .HasMaxLength(100);
-
-                entity.Property(u => u.Role)
-                    .IsRequired()
-                    .HasMaxLength(20);
-
-                entity.Property(u => u.Image)
-                    .HasMaxLength(255);
+                entity.Property(u => u.Name).IsRequired().HasMaxLength(50);
+                entity.Property(u => u.Lastname).IsRequired().HasMaxLength(50);
+                entity.Property(u => u.Email).IsRequired().HasMaxLength(100);
+                entity.HasIndex(u => u.Email).IsUnique();
+                entity.Property(u => u.Password).IsRequired().HasMaxLength(100);
+                entity.Property(u => u.Role).IsRequired().HasMaxLength(20);
+                entity.Property(u => u.Image).HasMaxLength(255);
             });
 
             // Gig Configuration
-            // En OnModelCreating:
             builder.Entity<Gig>(entity =>
             {
                 entity.ToTable("Gigs");
@@ -62,7 +43,7 @@ namespace gigu_back_end.Shared.Infrastructure.Persistence.Configuration
 
                 entity.Property(g => g.Image)
                     .IsRequired()
-                    .HasColumnType("LONGTEXT"); 
+                    .HasColumnType("LONGTEXT");
 
                 entity.Property(g => g.Title)
                     .IsRequired()
@@ -72,15 +53,14 @@ namespace gigu_back_end.Shared.Infrastructure.Persistence.Configuration
                     .IsRequired()
                     .HasMaxLength(2000);
 
-                entity.Property(g => g.SellerId) 
-                    .IsRequired();
+                entity.Property(g => g.SellerId).IsRequired();
 
                 entity.Property(g => g.Price)
                     .HasColumnType("decimal(18,2)");
 
                 entity.Property(g => g.Tags)
                     .HasConversion(
-                        v => string.Join(',', v), 
+                        v => string.Join(',', v),
                         v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList()
                     )
                     .HasColumnType("TEXT");
@@ -97,10 +77,16 @@ namespace gigu_back_end.Shared.Infrastructure.Persistence.Configuration
                     .HasColumnType("TEXT");
 
                 entity.Property(e => e.CreatedAt)
+                    .HasColumnType("datetime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .ValueGeneratedOnAdd();
 
-                // Índices
+                entity.Property(g => g.IsResponsive).IsRequired();
+                entity.Property(g => g.RevisionCount).IsRequired();
+                entity.Property(g => g.PageCount).IsRequired();
+                entity.Property(g => g.CustomAnimations).IsRequired();
+                entity.Property(g => g.DeliveryDays).IsRequired();
+
                 entity.HasIndex(g => g.SellerId);
                 entity.HasIndex(g => g.Category);
                 entity.HasIndex(g => new { g.IsResponsive, g.CustomAnimations });

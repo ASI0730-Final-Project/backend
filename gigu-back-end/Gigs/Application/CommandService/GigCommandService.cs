@@ -39,16 +39,19 @@ namespace Gigs.Application.CommandService
             }
 
             // Validaciones de dominio
+            /*
             if (!await _gigDomainService.IsUserActiveFreelancerAsync(command.SellerId))
             {
                 throw new GigValidationException("User is not an active freelancer");
             }
+            
 
             if (!await _gigDomainService.IsCategoryValidAsync(command.Category))
             {
                 throw new GigValidationException($"Category '{command.Category}' is not valid");
             }
-
+            */
+            
             // Crear entidad con todas las nuevas propiedades
             var gig = new Gig(
                 image: command.Image,

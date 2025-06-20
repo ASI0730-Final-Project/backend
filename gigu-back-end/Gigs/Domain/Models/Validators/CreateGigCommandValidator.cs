@@ -8,9 +8,11 @@ namespace Gigs.Domain.Models.Validators
         public CreateGigCommandValidator()
         {
             // Validación para Image (base64)
-            RuleFor(x => x.Image)
+            /*
+             RuleFor(x => x.Image)
                 .NotEmpty().WithMessage("Image is required")
                 .Must(BeValidBase64).WithMessage("Image must be a valid base64 string");
+                */
 
             // Validación existente para Title
             RuleFor(x => x.Title)
@@ -23,8 +25,10 @@ namespace Gigs.Domain.Models.Validators
                 .MaximumLength(2000).WithMessage("Description cannot exceed 2000 characters");
 
             // Cambiado de UserId a SellerId
-            RuleFor(x => x.SellerId)
+            /*
+             RuleFor(x => x.SellerId)
                 .GreaterThan(0).WithMessage("Valid Seller ID is required");
+            */
 
             // Validación existente para Price
             RuleFor(x => x.Price)
