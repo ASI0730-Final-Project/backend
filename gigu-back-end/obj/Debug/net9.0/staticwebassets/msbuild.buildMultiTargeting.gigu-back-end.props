@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\gigu-back-end.props" />
-</Project>

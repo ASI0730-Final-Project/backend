@@ -1,5 +1,6 @@
-﻿using gigu_back_end.User.Domain.Models.Entities;
-using Gigs.Domain.Models.Entities;
+﻿using gigu_back_end.User.Domain.Models.Entities; 
+using Gigs.Domain.Models.Entities; 
+using gigu_back_end.Briefcases.Domain.Models.Entities; 
 using Microsoft.EntityFrameworkCore;
 
 namespace gigu_back_end.Shared.Infrastructure.Persistence.Configuration
@@ -10,12 +11,14 @@ namespace gigu_back_end.Shared.Infrastructure.Persistence.Configuration
         public DbSet<Gig> Gigs { get; set; }
         public DbSet<Pull> Pulls { get; set; }
         public DbSet<Chat> Chats { get; set; }
+        public DbSet<Briefcase> Briefcases { get; set; }
+        public DbSet<Project> Projects { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
             base.OnConfiguring(builder);
         }
-
+        
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -34,7 +37,7 @@ namespace gigu_back_end.Shared.Infrastructure.Persistence.Configuration
                 entity.Property(u => u.Role).IsRequired().HasMaxLength(20);
                 entity.Property(u => u.Image).HasMaxLength(255);
             });
-
+            
             // Gig Configuration
             builder.Entity<Gig>(entity =>
             {
@@ -113,6 +116,53 @@ namespace gigu_back_end.Shared.Infrastructure.Persistence.Configuration
                 entity.Property(c => c.Content).IsRequired().HasMaxLength(1000);
                 entity.Property(c => c.SentAt).IsRequired();
             });
+            
+            // Briefcase Entity Configuration
+            builder.Entity<Briefcase>(entity =>
+            {
+                entity.ToTable("Briefcases");
+                entity.HasKey(c => c.Id);
+
+                entity.Property(c => c.Name)
+                    .IsRequired()
+                    .HasMaxLength(20);
+                
+                entity.Property(c => c.PublishDate)
+                    .IsRequired()
+                    .HasColumnType("DATETIME");
+
+                entity.Property(c => c.Description)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(c => c.CreatedDate)
+                    .IsRequired()
+                    .HasColumnType("DATETIME");
+
+                entity.Property(c => c.ModifiedDate)
+                    .HasColumnType("DATETIME");
+
+                entity.HasIndex(c => c.Name)
+                    .IsUnique();
+
+               
+            });
+            
+            // Project Entity Configuration
+            builder.Entity<Project>(entity =>
+            {
+                entity.ToTable("Projects");
+                entity.HasKey(c => c.Id);
+
+                entity.Property(c => c.CreatedDate)
+                    .IsRequired()
+                    .HasColumnType("DATETIME");
+
+                entity.Property(c => c.ModifiedDate)
+                    .HasColumnType("DATETIME");
+            });
+            
+            
         }
     }
 }

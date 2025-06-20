@@ -17,6 +17,12 @@ using Gigs.Application.CommandService;
 using Gigs.Application.QueryService;
 using Gigs.Domain;
 using Gigs.Domain.Models.Validators;
+using gigu_back_end.Briefcases.Application.CommandServices;
+using gigu_back_end.Briefcases.Application.QueryServices;
+using gigu_back_end.Briefcases.Domain;
+using gigu_back_end.Briefcases.Domain.Models.Validators;
+using gigu_back_end.Briefcases.Domain.Services;
+using gigu_back_end.Briefcases.Infraestructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -59,6 +65,11 @@ builder.Services.AddScoped<IUserQueryService, UserQueryService>();
 builder.Services.AddScoped<IUserCommandService, UserCommandService>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateUserCommandValidator>();
 builder.Services.AddScoped<IChatQueryService, ChatQueryService>(); // Chat Stuff
+// --- [Briefcases Bounded Context] ---
+builder.Services.AddScoped<IBriefcaseRepository, BriefcaseRepository>();
+builder.Services.AddScoped<IBriefcaseQueryService, BriefcaseQueryService>();
+builder.Services.AddScoped<IBriefcaseCommandService, BriefcaseCommandService>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateBriefcaseCommandValidator>();
 
 // --- [Gigs Bounded Context] ---
 // Repositories
