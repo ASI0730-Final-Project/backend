@@ -12,9 +12,9 @@ namespace Gigs.Domain.Models.Validators
                 .GreaterThan(0).WithMessage("Valid Gig ID is required");
 
             // Validación para Image (base64)
-            RuleFor(x => x.Image)
-                .NotEmpty().WithMessage("Image is required")
-                .Must(BeValidBase64).WithMessage("Image must be a valid base64 string");
+            //RuleFor(x => x.Image)
+                //.NotEmpty().WithMessage("Image is required")
+                //.Must(BeValidBase64).WithMessage("Image must be a valid base64 string");
 
             // Validación para Title
             RuleFor(x => x.Title)

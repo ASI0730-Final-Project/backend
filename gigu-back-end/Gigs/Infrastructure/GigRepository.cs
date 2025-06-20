@@ -13,9 +13,8 @@ namespace Gigs.Infrastructure.Persistence.EFC.Repositories
         public async Task<Gig> GetByIdAsync(int id)
         {
             return await Context.Set<Gig>()
-                .Include(g => g.Tags)
-                .FirstOrDefaultAsync(g => g.Id == id) 
-                ?? throw new KeyNotFoundException($"Gig with ID {id} not found");
+                       .FirstOrDefaultAsync(g => g.Id == id)
+                   ?? throw new KeyNotFoundException($"Gig with ID {id} not found");
         }
 
         public async Task<IEnumerable<Gig>> GetAllAsync(
