@@ -1,6 +1,6 @@
-﻿using gigu_back_end.User.Domain.Models.Entities; 
-using Gigs.Domain.Models.Entities; 
-using gigu_back_end.Briefcases.Domain.Models.Entities; 
+﻿using gigu_back_end.User.Domain.Models.Entities;
+using Gigs.Domain.Models.Entities;
+using gigu_back_end.Briefcases.Domain.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace gigu_back_end.Shared.Infrastructure.Persistence.Configuration
@@ -18,7 +18,7 @@ namespace gigu_back_end.Shared.Infrastructure.Persistence.Configuration
         {
             base.OnConfiguring(builder);
         }
-        
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -35,9 +35,16 @@ namespace gigu_back_end.Shared.Infrastructure.Persistence.Configuration
                 entity.HasIndex(u => u.Email).IsUnique();
                 entity.Property(u => u.Password).IsRequired().HasMaxLength(100);
                 entity.Property(u => u.Role).IsRequired().HasMaxLength(20);
-                entity.Property(u => u.Image).HasMaxLength(255);
+                entity.Property(u => u.Image).IsRequired().HasMaxLength(255);
+
+                // Fecha y auditoría
+                entity.Property(u => u.CreatedDate).HasColumnType("datetime").IsRequired();
+                entity.Property(u => u.ModifiedDate).HasColumnType("datetime");
+                entity.Property(u => u.UserId).IsRequired();
+                entity.Property(u => u.UpdatedUserId);
+                entity.Property(u => u.IsActive).IsRequired();
             });
-            
+
             // Gig Configuration
             builder.Entity<Gig>(entity =>
             {
@@ -48,18 +55,11 @@ namespace gigu_back_end.Shared.Infrastructure.Persistence.Configuration
                     .IsRequired()
                     .HasColumnType("LONGTEXT");
 
-                entity.Property(g => g.Title)
-                    .IsRequired()
-                    .HasMaxLength(200);
-
-                entity.Property(g => g.Description)
-                    .IsRequired()
-                    .HasMaxLength(2000);
-
+                entity.Property(g => g.Title).IsRequired().HasMaxLength(200);
+                entity.Property(g => g.Description).IsRequired().HasMaxLength(2000);
                 entity.Property(g => g.SellerId).IsRequired();
 
-                entity.Property(g => g.Price)
-                    .HasColumnType("decimal(18,2)");
+                entity.Property(g => g.Price).HasColumnType("decimal(18,2)");
 
                 entity.Property(g => g.Tags)
                     .HasConversion(
@@ -68,9 +68,7 @@ namespace gigu_back_end.Shared.Infrastructure.Persistence.Configuration
                     )
                     .HasColumnType("TEXT");
 
-                entity.Property(g => g.Category)
-                    .IsRequired()
-                    .HasMaxLength(100);
+                entity.Property(g => g.Category).IsRequired().HasMaxLength(100);
 
                 entity.Property(g => g.ExtraFeatures)
                     .HasConversion(
@@ -80,8 +78,7 @@ namespace gigu_back_end.Shared.Infrastructure.Persistence.Configuration
                     .HasColumnType("TEXT");
 
                 entity.Property(e => e.CreatedAt)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasColumnType("timestamp")
                     .ValueGeneratedOnAdd();
 
                 entity.Property(g => g.IsResponsive).IsRequired();
@@ -112,57 +109,45 @@ namespace gigu_back_end.Shared.Infrastructure.Persistence.Configuration
             // Chat Configuration
             builder.Entity<Chat>(entity =>
             {
+                entity.ToTable("Chats");
                 entity.HasKey(c => c.Id);
+
+                entity.Property(c => c.SenderId).IsRequired();
+                entity.Property(c => c.ReceiverId).IsRequired();
                 entity.Property(c => c.Content).IsRequired().HasMaxLength(1000);
-                entity.Property(c => c.SentAt).IsRequired();
+                entity.Property(c => c.SentAt).IsRequired().HasColumnType("datetime");
+                entity.Property(c => c.IsRead).IsRequired();
+                entity.Property(c => c.CreatedDate).IsRequired().HasColumnType("datetime");
+                entity.Property(c => c.ModifiedDate).HasColumnType("datetime");
+                entity.Property(c => c.UserId).IsRequired();
+                entity.Property(c => c.UpdatedUserId);
+                entity.Property(c => c.IsActive).IsRequired();
             });
-            
-            // Briefcase Entity Configuration
+
+            // Briefcase Configuration
             builder.Entity<Briefcase>(entity =>
             {
                 entity.ToTable("Briefcases");
                 entity.HasKey(c => c.Id);
 
-                entity.Property(c => c.Name)
-                    .IsRequired()
-                    .HasMaxLength(20);
-                
-                entity.Property(c => c.PublishDate)
-                    .IsRequired()
-                    .HasColumnType("DATETIME");
+                entity.Property(c => c.Name).IsRequired().HasMaxLength(20);
+                entity.Property(c => c.PublishDate).IsRequired().HasColumnType("datetime");
+                entity.Property(c => c.Description).IsRequired().HasMaxLength(100);
+                entity.Property(c => c.CreatedDate).IsRequired().HasColumnType("datetime");
+                entity.Property(c => c.ModifiedDate).HasColumnType("datetime");
 
-                entity.Property(c => c.Description)
-                    .IsRequired()
-                    .HasMaxLength(100);
-
-                entity.Property(c => c.CreatedDate)
-                    .IsRequired()
-                    .HasColumnType("DATETIME");
-
-                entity.Property(c => c.ModifiedDate)
-                    .HasColumnType("DATETIME");
-
-                entity.HasIndex(c => c.Name)
-                    .IsUnique();
-
-               
+                entity.HasIndex(c => c.Name).IsUnique();
             });
-            
-            // Project Entity Configuration
+
+            // Project Configuration
             builder.Entity<Project>(entity =>
             {
                 entity.ToTable("Projects");
                 entity.HasKey(c => c.Id);
 
-                entity.Property(c => c.CreatedDate)
-                    .IsRequired()
-                    .HasColumnType("DATETIME");
-
-                entity.Property(c => c.ModifiedDate)
-                    .HasColumnType("DATETIME");
+                entity.Property(c => c.CreatedDate).IsRequired().HasColumnType("datetime");
+                entity.Property(c => c.ModifiedDate).HasColumnType("datetime");
             });
-            
-            
         }
     }
 }
