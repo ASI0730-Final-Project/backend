@@ -1,4 +1,4 @@
-﻿using gigu_back_end.Shared.Domain; //cuidado
+﻿using gigu_back_end.Shared.Domain; 
 using gigu_back_end.Briefcases.Domain;
 using gigu_back_end.Briefcases.Domain.Models.Entities;
 using gigu_back_end.Shared.Infraestructure.Persistence.Repositories;

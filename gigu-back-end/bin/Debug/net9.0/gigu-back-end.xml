@@ -1,0 +1,183 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>gigu-back-end</name>
+    </assembly>
+    <members>
+        <member name="T:gigu_back_end.Briefcases.Domain.Models.Commands.CreateBriefcaseCommand">
+            <summary>
+            Comando para crear un nuevo portafolio (briefcase).
+            </summary>
+        </member>
+        <member name="M:gigu_back_end.Briefcases.Domain.Models.Commands.CreateBriefcaseCommand.#ctor(System.Int32,System.String,System.String,System.DateTime,System.Collections.Generic.List{gigu_back_end.Briefcases.Domain.Models.Commands.ProjectCommand})">
+            <summary>
+            Comando para crear un nuevo portafolio (briefcase).
+            </summary>
+        </member>
+        <member name="T:gigu_back_end.Briefcases.Domain.Models.Commands.ProjectCommand">
+            <summary>
+            Comando que representa un proyecto a ser incluido dentro de un portafolio (briefcase).
+            </summary>
+            <param name="Title">Título del proyecto.</param>
+            <param name="Description">Descripción del proyecto.</param>
+            <param name="Price">Precio estimado del proyecto (por ejemplo, "$250").</param>
+            <param name="Time">Duración estimada del proyecto (por ejemplo, "3 semanas").</param>
+            <param name="GigLink">Enlace al gig asociado o página externa del proyecto.</param>
+        </member>
+        <member name="M:gigu_back_end.Briefcases.Domain.Models.Commands.ProjectCommand.#ctor(System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Comando que representa un proyecto a ser incluido dentro de un portafolio (briefcase).
+            </summary>
+            <param name="Title">Título del proyecto.</param>
+            <param name="Description">Descripción del proyecto.</param>
+            <param name="Price">Precio estimado del proyecto (por ejemplo, "$250").</param>
+            <param name="Time">Duración estimada del proyecto (por ejemplo, "3 semanas").</param>
+            <param name="GigLink">Enlace al gig asociado o página externa del proyecto.</param>
+        </member>
+        <member name="P:gigu_back_end.Briefcases.Domain.Models.Commands.ProjectCommand.Title">
+            <summary>Título del proyecto.</summary>
+        </member>
+        <member name="P:gigu_back_end.Briefcases.Domain.Models.Commands.ProjectCommand.Description">
+            <summary>Descripción del proyecto.</summary>
+        </member>
+        <member name="P:gigu_back_end.Briefcases.Domain.Models.Commands.ProjectCommand.Price">
+            <summary>Precio estimado del proyecto (por ejemplo, "$250").</summary>
+        </member>
+        <member name="P:gigu_back_end.Briefcases.Domain.Models.Commands.ProjectCommand.Time">
+            <summary>Duración estimada del proyecto (por ejemplo, "3 semanas").</summary>
+        </member>
+        <member name="P:gigu_back_end.Briefcases.Domain.Models.Commands.ProjectCommand.GigLink">
+            <summary>Enlace al gig asociado o página externa del proyecto.</summary>
+        </member>
+        <member name="T:gigu_back_end.Briefcases.Domain.Models.Commands.UpdateBriefcaseCommand">
+            <summary>
+            Comando para actualizar los datos de un portafolio (briefcase) existente.
+            </summary>
+        </member>
+        <member name="M:gigu_back_end.Briefcases.Domain.Models.Commands.UpdateBriefcaseCommand.#ctor(System.Int32,System.String,System.String,System.DateTime)">
+            <summary>
+            Comando para actualizar los datos de un portafolio (briefcase) existente.
+            </summary>
+        </member>
+        <member name="M:gigu_back_end.Briefcases.Interfaces.REST.BriefcaseController.GetAsync">
+            <summary>
+            Obtiene todos los portafolios.
+            </summary>
+            <returns>Lista de portafolios.</returns>
+        </member>
+        <member name="M:gigu_back_end.Briefcases.Interfaces.REST.BriefcaseController.Get(System.Int32)">
+            <summary>
+            Obtiene un portafolio por su ID.
+            </summary>
+            <param name="id">ID del portafolio.</param>
+            <returns>Portafolio encontrado.</returns>
+        </member>
+        <member name="M:gigu_back_end.Briefcases.Interfaces.REST.BriefcaseController.Post(gigu_back_end.Briefcases.Domain.Models.Commands.CreateBriefcaseCommand)">
+            <summary>
+            Crea un nuevo portafolio.
+            </summary>
+            <param name="command">Comando para crear portafolio.</param>
+            <returns>Estado de creación.</returns>
+        </member>
+        <member name="M:gigu_back_end.Briefcases.Interfaces.REST.BriefcaseController.Delete(System.Int32)">
+            <summary>
+            Elimina un portafolio por su ID.
+            </summary>
+            <param name="id">ID del portafolio.</param>
+            <returns>Sin contenido si se elimina correctamente.</returns>
+        </member>
+        <member name="T:gigu_back_end.Briefcases.Interfaces.REST.Resources.BriefcaseResource">
+            <summary>
+            Recurso que representa un portafolio (briefcase) con sus proyectos relacionados.
+            </summary>
+            <param name="Id">Identificador único del portafolio.</param>
+            <param name="Name">Nombre del portafolio.</param>
+            <param name="Description">Descripción del portafolio.</param>
+            <param name="PublishDate">Fecha de publicación del portafolio.</param>
+            <param name="SellerId">Identificador del vendedor o usuario dueño del portafolio.</param>
+            <param name="Projects">Lista de proyectos contenidos en el portafolio.</param>
+        </member>
+        <member name="M:gigu_back_end.Briefcases.Interfaces.REST.Resources.BriefcaseResource.#ctor(System.Int32,System.String,System.String,System.DateTime,System.Int32,System.Collections.Generic.List{gigu_back_end.Briefcases.Interfaces.REST.Resources.ProjectResource})">
+            <summary>
+            Recurso que representa un portafolio (briefcase) con sus proyectos relacionados.
+            </summary>
+            <param name="Id">Identificador único del portafolio.</param>
+            <param name="Name">Nombre del portafolio.</param>
+            <param name="Description">Descripción del portafolio.</param>
+            <param name="PublishDate">Fecha de publicación del portafolio.</param>
+            <param name="SellerId">Identificador del vendedor o usuario dueño del portafolio.</param>
+            <param name="Projects">Lista de proyectos contenidos en el portafolio.</param>
+        </member>
+        <member name="P:gigu_back_end.Briefcases.Interfaces.REST.Resources.BriefcaseResource.Id">
+            <summary>Identificador único del portafolio.</summary>
+        </member>
+        <member name="P:gigu_back_end.Briefcases.Interfaces.REST.Resources.BriefcaseResource.Name">
+            <summary>Nombre del portafolio.</summary>
+        </member>
+        <member name="P:gigu_back_end.Briefcases.Interfaces.REST.Resources.BriefcaseResource.Description">
+            <summary>Descripción del portafolio.</summary>
+        </member>
+        <member name="P:gigu_back_end.Briefcases.Interfaces.REST.Resources.BriefcaseResource.PublishDate">
+            <summary>Fecha de publicación del portafolio.</summary>
+        </member>
+        <member name="P:gigu_back_end.Briefcases.Interfaces.REST.Resources.BriefcaseResource.SellerId">
+            <summary>Identificador del vendedor o usuario dueño del portafolio.</summary>
+        </member>
+        <member name="P:gigu_back_end.Briefcases.Interfaces.REST.Resources.BriefcaseResource.Projects">
+            <summary>Lista de proyectos contenidos en el portafolio.</summary>
+        </member>
+        <member name="T:gigu_back_end.Briefcases.Interfaces.REST.Resources.ProjectResource">
+            <summary>
+            Recurso que representa un proyecto dentro de un portafolio (briefcase).
+            </summary>
+            <param name="Title">Título del proyecto.</param>
+            <param name="Description">Descripción detallada del proyecto.</param>
+            <param name="Price">Precio estimado del proyecto (formato string, por ejemplo: "$100").</param>
+            <param name="Time">Tiempo estimado para completar el proyecto (formato string, por ejemplo: "2 semanas").</param>
+            <param name="GigLink">Enlace al gig o publicación asociada al proyecto.</param>
+        </member>
+        <member name="M:gigu_back_end.Briefcases.Interfaces.REST.Resources.ProjectResource.#ctor(System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Recurso que representa un proyecto dentro de un portafolio (briefcase).
+            </summary>
+            <param name="Title">Título del proyecto.</param>
+            <param name="Description">Descripción detallada del proyecto.</param>
+            <param name="Price">Precio estimado del proyecto (formato string, por ejemplo: "$100").</param>
+            <param name="Time">Tiempo estimado para completar el proyecto (formato string, por ejemplo: "2 semanas").</param>
+            <param name="GigLink">Enlace al gig o publicación asociada al proyecto.</param>
+        </member>
+        <member name="P:gigu_back_end.Briefcases.Interfaces.REST.Resources.ProjectResource.Title">
+            <summary>Título del proyecto.</summary>
+        </member>
+        <member name="P:gigu_back_end.Briefcases.Interfaces.REST.Resources.ProjectResource.Description">
+            <summary>Descripción detallada del proyecto.</summary>
+        </member>
+        <member name="P:gigu_back_end.Briefcases.Interfaces.REST.Resources.ProjectResource.Price">
+            <summary>Precio estimado del proyecto (formato string, por ejemplo: "$100").</summary>
+        </member>
+        <member name="P:gigu_back_end.Briefcases.Interfaces.REST.Resources.ProjectResource.Time">
+            <summary>Tiempo estimado para completar el proyecto (formato string, por ejemplo: "2 semanas").</summary>
+        </member>
+        <member name="P:gigu_back_end.Briefcases.Interfaces.REST.Resources.ProjectResource.GigLink">
+            <summary>Enlace al gig o publicación asociada al proyecto.</summary>
+        </member>
+        <member name="M:gigu_back_end.Shared.Infraestructure.Persistence.Repositories.BaseRepository`1.AddAsync(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:gigu_back_end.Shared.Infraestructure.Persistence.Repositories.BaseRepository`1.FindByIdAsync(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:gigu_back_end.Shared.Infraestructure.Persistence.Repositories.BaseRepository`1.Update(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:gigu_back_end.Shared.Infraestructure.Persistence.Repositories.BaseRepository`1.Remove(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:gigu_back_end.Shared.Infraestructure.Persistence.Repositories.BaseRepository`1.ListAsync">
+            <inheritdoc />
+        </member>
+        <member name="M:gigu_back_end.Shared.Infraestructure.Persistence.Repositories.UnitOfWork.CompleteAsync">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>
