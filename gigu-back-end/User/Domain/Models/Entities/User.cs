@@ -18,6 +18,11 @@ namespace gigu_back_end.User.Domain.Models.Entities
             CreatedDate = DateTime.UtcNow;
         }
 
+        public User()
+        {
+            
+        }
+
         public string Name { get; set; }
         public string Lastname { get; set; }
         public string Email { get; set; }
