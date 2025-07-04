@@ -22,6 +22,9 @@ using gigu_back_end.Briefcases.Domain;
 using gigu_back_end.Briefcases.Domain.Models.Validators;
 using gigu_back_end.Briefcases.Domain.Services;
 using gigu_back_end.Briefcases.Infraestructure;
+using gigu_back_end.Shared.Infraestructure.Middlewares;
+using gigu_back_end.User.Application;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -59,6 +62,9 @@ builder.Services.AddDbContext<GigUContext>(options =>
 });
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+builder.Services.AddScoped<IHashService, HashService>();
+builder.Services.AddScoped<IJwtEncryptService, JwtEncryptService>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserQueryService, UserQueryService>();
@@ -106,6 +112,9 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.WebHost.UseUrls("http://localhost:5000");
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer();
+
 var app = builder.Build();
 
 app.UseSwagger();
@@ -129,8 +138,10 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
+app.UseMiddleware<AutheMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+

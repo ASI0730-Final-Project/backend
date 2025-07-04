@@ -15,7 +15,9 @@ namespace gigu_back_end.User.Application.CommandServices
     public class UserCommandService(
         IUserRepository userRepository,
         IUnitOfWork unitOfWork,
-        IValidator<CreateUserCommand> validator) : IUserCommandService
+        IValidator<CreateUserCommand> validator, 
+        IHashService hashService,
+        IJwtEncryptService jwtEncryptService) : IUserCommandService
     {
         public async Task<Domain.Models.Entities.User> Handle(CreateUserCommand command)
         {
@@ -63,6 +65,43 @@ namespace gigu_back_end.User.Application.CommandServices
             userRepository.Update(user);
             await unitOfWork.CompleteAsync();
             return true;
+        }
+        
+        public async Task<Domain.Models.Entities.User> Handle(SignUpCommand command)
+        {
+            var existingUser = await userRepository.GetByEmailAsync(command.Email);
+            if (existingUser != null)
+                throw new EmailAlreadyTakenException();
+
+            var user = new Domain.Models.Entities.User
+            {
+                Email = command.Email,
+                Password = hashService.HashPassword(command.Password),
+                Role = command.Role, 
+                Name = command.Name,
+                Lastname = command.Lastname,
+                Image = command.Image,
+                IsActive = true
+            };
+
+            await userRepository.AddAsync(user);
+            await unitOfWork.CompleteAsync();
+
+            return user;
+        }
+        
+        public async Task<string> Handle(LoginCommand command)
+        {
+            var user = await userRepository.GetByEmailAsync(command.Email);
+            if (user == null || !hashService.VerifyPassword(command.Password, user.Password))
+                throw new InvalidCredentialsException();
+
+            //coinciden
+
+            var jwtToken = jwtEncryptService.Encrypt(user);
+
+
+            return jwtToken;
         }
     }
 
