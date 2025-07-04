@@ -25,6 +25,12 @@ namespace gigu_back_end.User.Application.QueryServices
             var user = await userRepository.GetByEmailAsync(query.UserEmail);
             return user?.IsActive == true ? user : null;
         }
+        
+        public async Task<Domain.Models.Entities.User> Handle(GetCurrentUserQuery query)
+        {
+            var user = await userRepository.FindByIdAsync(query.UserId);
+            return user?.IsActive == true ? user : null;
+        }
     }
 
 }
