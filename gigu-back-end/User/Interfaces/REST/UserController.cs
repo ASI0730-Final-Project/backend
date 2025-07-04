@@ -21,7 +21,7 @@ public class UserController(IUserQueryService userQueryService, IUserCommandServ
     private readonly IUserCommandService _userCommandService = userCommandService;
     
     [HttpGet]
-    [CustomAuthorize("buyer")]
+    [CustomAuthorize("buyer,seller")]
     public async Task<IActionResult> GetAll()
     {
         var users = await _userQueryService.Handle(new GetAllUsersQuery());
@@ -30,7 +30,7 @@ public class UserController(IUserQueryService userQueryService, IUserCommandServ
     
     
     [HttpGet("{id:int}")]
-    [CustomAuthorize("seller")]
+    [CustomAuthorize("buyer,seller")]
     public async Task<IActionResult> GetById(int id)
     {
         var user = await _userQueryService.Handle(new GetUserByIdQuery(id));
