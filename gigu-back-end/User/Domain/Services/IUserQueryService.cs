@@ -7,4 +7,5 @@ public interface IUserQueryService
 {
     Task<IEnumerable<Models.Entities.User>> Handle(GetAllUsersQuery query);
     Task<Models.Entities.User> Handle(GetUserByIdQuery query);
+    Task<Models.Entities.User> Handle(GetCurrentUserQuery query);
 }
