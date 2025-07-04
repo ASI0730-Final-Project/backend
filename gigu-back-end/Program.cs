@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text;
 using FluentValidation;
 using gigu_back_end.Shared.Domain;
 using gigu_back_end.Shared.Infrastructure.Persistence.Configuration;
@@ -28,7 +29,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -107,12 +107,34 @@ builder.Services.AddSwaggerGen(options =>
         },
         License = new OpenApiLicense { Name = "MIT" }
     });
+    
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "Introduce tu token JWT aquí. Ejemplo: 'Bearer {token}'",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+    
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
 
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
-
-// --- Aquí la parte importante para JWT ---
 
 var key = Encoding.UTF8.GetBytes(builder.Configuration["Auth:key"]!);
 
@@ -123,7 +145,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = false; // Cambiar a true en producción
+    options.RequireHttpsMetadata = false; 
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -162,11 +184,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// IMPORTANTÍSIMO: Usa primero Authentication y luego Authorization
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseMiddleware<AutheMiddleware>();  // Si usas tu middleware personalizado, ponlo aquí (antes o después de auth según necesidad)
+app.UseMiddleware<AutheMiddleware>();
 
 app.MapControllers();
 
