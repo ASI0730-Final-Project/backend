@@ -26,7 +26,9 @@ using gigu_back_end.Shared.Infraestructure.Middlewares;
 using gigu_back_end.User.Application;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -110,10 +112,30 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
-builder.WebHost.UseUrls("http://localhost:5000");
+// --- Aquí la parte importante para JWT ---
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer();
+var key = Encoding.UTF8.GetBytes(builder.Configuration["Auth:key"]!);
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false; // Cambiar a true en producción
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ClockSkew = TimeSpan.Zero
+    };
+});
+
+builder.WebHost.UseUrls("http://localhost:5000");
 
 var app = builder.Build();
 
@@ -138,10 +160,14 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
-app.UseMiddleware<AutheMiddleware>();
 app.UseHttpsRedirection();
+
+// IMPORTANTÍSIMO: Usa primero Authentication y luego Authorization
+app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<AutheMiddleware>();  // Si usas tu middleware personalizado, ponlo aquí (antes o después de auth según necesidad)
+
 app.MapControllers();
 
 app.Run();
-

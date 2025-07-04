@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 using FluentValidation;
 using gigu_back_end.Shared.Domain.Models.Commands;
 using gigu_back_end.Shared.Infraestructure.Attribute;
@@ -30,7 +31,7 @@ public class UserController(IUserQueryService userQueryService, IUserCommandServ
     
     
     [HttpGet("{id:int}")]
-    [CustomAuthorize("buyer,seller")]
+    [CustomAuthorize("seller,buyer")]
     public async Task<IActionResult> GetById(int id)
     {
         var user = await _userQueryService.Handle(new GetUserByIdQuery(id));
@@ -112,4 +113,33 @@ public class UserController(IUserQueryService userQueryService, IUserCommandServ
             return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred", detail = ex.Message });
         }
     }
+    
+    [HttpGet("me")]
+    [CustomAuthorize("buyer,seller")]  // Solo usuarios autenticados
+    public async Task<IActionResult> GetCurrentUser()
+    {
+        try
+        {
+            // Extraemos el userId del claim (según tu JwtEncryptService usas ClaimTypes.Sid)
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid);
+            if (userIdClaim == null)
+                return Unauthorized(new { message = "User ID claim not found" });
+
+            if (!int.TryParse(userIdClaim.Value, out var userId))
+                return Unauthorized(new { message = "Invalid user ID in token" });
+
+            var user = await _userQueryService.Handle(new GetCurrentUserQuery(userId));
+            if (user == null)
+                return NotFound(new { message = "User not found" });
+
+            var userResource = UserResourceFromEntityAssembler.ToResourceFromEntity(user);
+            return Ok(userResource);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Error fetching current user", detail = ex.Message });
+        }
+    }
+
+    
 }
