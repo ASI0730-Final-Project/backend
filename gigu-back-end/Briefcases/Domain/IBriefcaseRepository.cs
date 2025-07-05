@@ -6,6 +6,8 @@ namespace gigu_back_end.Briefcases.Domain;
 public interface IBriefcaseRepository : IBaseRepository<Briefcase>
 {
     Task<Briefcase?> GetByNameAsync(string name);
-    
+
     Task<IEnumerable<Briefcase>> GetAllWithProjectsAsync();
+
+    Task<Briefcase?> FindBySellerIdWithProjectsAsync(int sellerId); // NUEVO
 }

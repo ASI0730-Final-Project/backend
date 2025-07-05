@@ -5,6 +5,6 @@ namespace gigu_back_end.Briefcases.Domain.Services;
 
 public interface IBriefcaseQueryService
 {
-    Task<IEnumerable<Briefcase>> Handle (GetAllBriefcasesQuery query);
-    Task<Briefcase> Handle (GetBriefcaseByIdQuery query);
+    Task<IEnumerable<Briefcase>> Handle(GetAllBriefcasesQuery query);
+    Task<Briefcase> Handle(GetBriefcaseBySellerIdQuery query); // CAMBIO
 }

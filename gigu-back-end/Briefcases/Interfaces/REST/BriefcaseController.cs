@@ -32,23 +32,25 @@ public class BriefcaseController(IBriefcaseQueryService briefcaseQueryService, I
     }
 
     /// <summary>
-    /// Obtiene un portafolio por su ID.
+    /// Obtiene un portafolio por el ID del vendedor.
     /// </summary>
-    /// <param name="id">ID del portafolio.</param>
+    /// <param name="sellerId">ID del vendedor.</param>
     /// <returns>Portafolio encontrado.</returns>
-    [HttpGet("{id:int}")]
+    [HttpGet("by-seller/{sellerId:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> GetBySellerId(int sellerId)
     {
-        if (id <= 0) return BadRequest("Invalid briefcase ID.");
+        if (sellerId <= 0) return BadRequest("Invalid seller ID.");
 
-        var result = await _briefcaseQueryService.Handle(new GetBriefcaseByIdQuery(id));
+        var result = await _briefcaseQueryService.Handle(new GetBriefcaseBySellerIdQuery(sellerId));
         return result != null
             ? Ok(BriefcaseResourceFromEntityAssembler.ToResourceFromEntity(result))
-            : NotFound($"Briefcase with ID {id} not found.");
+            : NotFound($"Briefcase for seller ID {sellerId} not found.");
     }
+
+
 
     /// <summary>
     /// Crea un nuevo portafolio.
