@@ -6,7 +6,6 @@ namespace Gigs.Interfaces.REST.Resources
 
         public int SellerId { get; set; }
 
-        // Opcional: se asigna solo cuando se cierra la subasta
         public int? BuyerId { get; set; }
 
         public int GigId { get; set; }
@@ -15,6 +14,6 @@ namespace Gigs.Interfaces.REST.Resources
 
         public decimal PriceUpdate { get; set; }
 
-        public string State { get; set; } = "abierta";
+        public string State { get; set; } = "pending";
     }
 }

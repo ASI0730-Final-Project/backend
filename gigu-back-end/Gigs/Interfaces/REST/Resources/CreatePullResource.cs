@@ -1,26 +1,30 @@
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Gigs.Interfaces.REST.Resources
 {
     public class CreatePullResource
     {
-        [Required(ErrorMessage = "El ID del vendedor es obligatorio.")]
+        private static readonly List<string> AllowedStates = new() { "pending", "in_process", "payed", "complete" };
+
+        [Required(ErrorMessage = "Seller ID is required.")]
         public int SellerId { get; set; }
 
-        [Required(ErrorMessage = "El ID del gig es obligatorio.")]
+        [Required(ErrorMessage = "Gig ID is required.")]
         public int GigId { get; set; }
 
-        [Required(ErrorMessage = "El precio inicial es obligatorio.")]
-        [Range(0.01, double.MaxValue, ErrorMessage = "El precio debe ser mayor que 0.")]
+        [Required(ErrorMessage = "Initial price is required.")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0.")]
         public decimal PriceInit { get; set; }
 
-        // Opcionales
-        [Range(0.01, double.MaxValue, ErrorMessage = "El precio actualizado debe ser mayor que 0.")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Updated price must be greater than 0.")]
         public decimal? PriceUpdate { get; set; }
 
         public int? BuyerId { get; set; }
 
-        [StringLength(20, ErrorMessage = "El estado no debe superar los 20 caracteres.")]
+        [StringLength(20, ErrorMessage = "State cannot exceed 20 characters.")]
+        [RegularExpression("pending|in_process|payed|complete", ErrorMessage = "Invalid state.")]
         public string? State { get; set; }
     }
 }
