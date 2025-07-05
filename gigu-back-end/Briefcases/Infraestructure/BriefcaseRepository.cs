@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace gigu_back_end.Briefcases.Infraestructure;
 
-public class BriefcaseRepository (GigUContext context): BaseRepository<Briefcase>(context), IBriefcaseRepository
+public class BriefcaseRepository(GigUContext context)
+    : BaseRepository<Briefcase>(context), IBriefcaseRepository
 {
     public async Task<Briefcase?> GetByNameAsync(string name)
     {
@@ -17,7 +18,15 @@ public class BriefcaseRepository (GigUContext context): BaseRepository<Briefcase
     public async Task<IEnumerable<Briefcase>> GetAllWithProjectsAsync()
     {
         return await Context.Set<Briefcase>()
-            .Include(briefcase => briefcase.Projects)
+            .Include(b => b.Projects)
+            .Where(b => b.IsActive)
             .ToListAsync();
+    }
+
+    public async Task<Briefcase?> FindBySellerIdWithProjectsAsync(int sellerId)
+    {
+        return await Context.Set<Briefcase>()
+            .Include(b => b.Projects)
+            .FirstOrDefaultAsync(b => b.SellerId == sellerId && b.IsActive);
     }
 }
