@@ -2,6 +2,7 @@ using Gigs.Domain.Models.Entities;
 using Gigs.Domain.Services;
 using Gigs.Interfaces.REST.Resources;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +14,13 @@ namespace Gigs.Interfaces.REST
     public class PullController : ControllerBase
     {
         private readonly IPullDomainService _pullDomain;
+        private static readonly HashSet<string> AllowedStates = new()
+        {
+            "pending",
+            "in_process",
+            "payed",
+            "complete"
+        };
 
         public PullController(IPullDomainService pullDomain)
         {
@@ -59,7 +67,7 @@ namespace Gigs.Interfaces.REST
         }
 
         [HttpPost]
-        public async Task<ActionResult<PullResource>> Create([FromBody] SavePullResource resource)
+        public async Task<ActionResult<PullResource>> Create([FromBody] CreatePullResource resource)
         {
             var pull = new Pull
             {
@@ -68,7 +76,7 @@ namespace Gigs.Interfaces.REST
                 PriceInit = resource.PriceInit,
                 PriceUpdate = resource.PriceUpdate ?? resource.PriceInit,
                 BuyerId = resource.BuyerId,
-                State = resource.State ?? "abierta"
+                State = resource.State ?? "pending"
             };
 
             await _pullDomain.OpenPullAsync(pull);
@@ -87,13 +95,32 @@ namespace Gigs.Interfaces.REST
             return CreatedAtAction(nameof(GetById), new { id = pull.Id }, result);
         }
 
-        [HttpPut("{id}/update-price")]
-        public async Task<IActionResult> UpdatePrice(int id, [FromBody] UpdatePriceRequest request)
+        // PUT para actualizar precio y/o estado
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] UpdatePullRequest request)
         {
             try
             {
-                var updatedPull = await _pullDomain.UpdatePullPriceAsync(id, request.NewPrice);
-                return Ok(updatedPull);
+                if (request.NewPrice.HasValue && request.NewPrice <= 0)
+                    return BadRequest(new { message = "New price must be greater than zero." });
+
+                if (!string.IsNullOrEmpty(request.NewState) && !AllowedStates.Contains(request.NewState))
+                    return BadRequest(new { message = "Invalid state." });
+
+                var updatedPull = await _pullDomain.UpdatePullAsync(id, request.NewPrice, request.NewState);
+
+                var result = new PullResource
+                {
+                    Id = updatedPull.Id,
+                    SellerId = updatedPull.SellerId,
+                    BuyerId = updatedPull.BuyerId,
+                    GigId = updatedPull.GigId,
+                    PriceInit = updatedPull.PriceInit,
+                    PriceUpdate = updatedPull.PriceUpdate,
+                    State = updatedPull.State
+                };
+
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -115,9 +142,10 @@ namespace Gigs.Interfaces.REST
             }
         }
 
-        public class UpdatePriceRequest
+        public class UpdatePullRequest
         {
-            public decimal NewPrice { get; set; }
+            public decimal? NewPrice { get; set; }
+            public string? NewState { get; set; }
         }
     }
 }
