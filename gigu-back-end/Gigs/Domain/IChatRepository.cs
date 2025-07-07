@@ -6,4 +6,6 @@ namespace Gigs.Domain;
 public interface IChatRepository : IBaseRepository<Chat>
 {
     Task<IEnumerable<Chat>> GetChatsByUserIdAsync(int userId);
+    
+    Task<IEnumerable<Chat>> GetChatsBetweenUsersAsync(int senderId, int receiverId);
 }

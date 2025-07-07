@@ -59,17 +59,22 @@
             Comando para actualizar los datos de un portafolio (briefcase) existente.
             </summary>
         </member>
+        <member name="T:gigu_back_end.Briefcases.Domain.Models.Queries.GetBriefcaseBySellerIdQuery">
+            <summary>
+            Query para obtener un briefcase por el ID del vendedor (SellerId).
+            </summary>
+        </member>
         <member name="M:gigu_back_end.Briefcases.Interfaces.REST.BriefcaseController.GetAsync">
             <summary>
             Obtiene todos los portafolios.
             </summary>
             <returns>Lista de portafolios.</returns>
         </member>
-        <member name="M:gigu_back_end.Briefcases.Interfaces.REST.BriefcaseController.Get(System.Int32)">
+        <member name="M:gigu_back_end.Briefcases.Interfaces.REST.BriefcaseController.GetBySellerId(System.Int32)">
             <summary>
-            Obtiene un portafolio por su ID.
+            Obtiene un portafolio por el ID del vendedor.
             </summary>
-            <param name="id">ID del portafolio.</param>
+            <param name="sellerId">ID del vendedor.</param>
             <returns>Portafolio encontrado.</returns>
         </member>
         <member name="M:gigu_back_end.Briefcases.Interfaces.REST.BriefcaseController.Post(gigu_back_end.Briefcases.Domain.Models.Commands.CreateBriefcaseCommand)">
@@ -160,6 +165,41 @@
         </member>
         <member name="P:gigu_back_end.Briefcases.Interfaces.REST.Resources.ProjectResource.GigLink">
             <summary>Enlace al gig o publicación asociada al proyecto.</summary>
+        </member>
+        <member name="T:gigu_back_end.Gigs.Interfaces.REST.CChatController">
+            <summary>
+            REST Controller for managing chat messages between users.
+            </summary>
+        </member>
+        <member name="M:gigu_back_end.Gigs.Interfaces.REST.CChatController.Post(Gigs.Domain.Models.Commands.CreateChatCommand)">
+            <summary>
+            Creates a new chat message between two users.
+            </summary>
+            <param name="command">Chat creation command containing senderId, receiverId, and content.</param>
+            <returns>The created chat resource.</returns>
+            <response code="201">Chat created successfully.</response>
+            <response code="400">Validation error.</response>
+            <response code="404">Sender or receiver not found.</response>
+            <response code="500">Internal server error.</response>
+        </member>
+        <member name="M:gigu_back_end.Gigs.Interfaces.REST.CChatController.GetChatsByUserId(System.Int32)">
+            <summary>
+            Retrieves all chat messages where the user is either sender or receiver.
+            </summary>
+            <param name="userId">ID of the user.</param>
+            <returns>List of chats involving the user.</returns>
+            <response code="200">Chats retrieved successfully.</response>
+            <response code="404">No chats found.</response>
+        </member>
+        <member name="M:gigu_back_end.Gigs.Interfaces.REST.CChatController.GetConversation(System.Int32,System.Int32)">
+            <summary>
+            Retrieves all chat messages exchanged between two users.
+            </summary>
+            <param name="senderId">ID of the sender user.</param>
+            <param name="receiverId">ID of the receiver user.</param>
+            <returns>List of chats exchanged between the sender and receiver.</returns>
+            <response code="200">Chats retrieved successfully.</response>
+            <response code="404">No conversation found.</response>
         </member>
         <member name="M:gigu_back_end.Shared.Infraestructure.Persistence.Repositories.BaseRepository`1.AddAsync(`0)">
             <inheritdoc />

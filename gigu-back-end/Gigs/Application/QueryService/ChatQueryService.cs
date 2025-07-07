@@ -15,4 +15,10 @@ public class ChatQueryService(IChatRepository chatRepository) : IChatQueryServic
         var chats = await _chatRepository.GetChatsByUserIdAsync(query.UserId);
         return chats;
     }
+    
+    public async Task<IEnumerable<Chat>> Handle(GetChatsBetweenUsersQuery query)
+    {
+        return await _chatRepository.GetChatsBetweenUsersAsync(query.SenderId, query.ReceiverId);
+    }
+
 }
