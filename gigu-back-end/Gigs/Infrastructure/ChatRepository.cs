@@ -16,4 +16,15 @@ public class ChatRepository : BaseRepository<Chat>, IChatRepository
             .Where(c => c.SenderId == userId || c.ReceiverId == userId)
             .ToListAsync();
     }
+    
+    public async Task<IEnumerable<Chat>> GetChatsBetweenUsersAsync(int senderId, int receiverId)
+    {
+        return await Context.Set<Chat>()
+            .Where(c => 
+                (c.SenderId == senderId && c.ReceiverId == receiverId) ||
+                (c.SenderId == receiverId && c.ReceiverId == senderId))
+            .OrderBy(c => c.SentAt)
+            .ToListAsync();
+    }
+
 }

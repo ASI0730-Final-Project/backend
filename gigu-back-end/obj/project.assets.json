@@ -11873,11 +11873,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\vr700\\Desktop\\BackendSubirGIgu222\\backend\\gigu-back-end\\gigu-back-end.csproj",
+      "projectUniqueName": "C:\\Users\\vr700\\Desktop\\SUBIRRR\\backend\\gigu-back-end\\gigu-back-end.csproj",
       "projectName": "gigu-back-end",
-      "projectPath": "C:\\Users\\vr700\\Desktop\\BackendSubirGIgu222\\backend\\gigu-back-end\\gigu-back-end.csproj",
+      "projectPath": "C:\\Users\\vr700\\Desktop\\SUBIRRR\\backend\\gigu-back-end\\gigu-back-end.csproj",
       "packagesPath": "C:\\Users\\vr700\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\vr700\\Desktop\\BackendSubirGIgu222\\backend\\gigu-back-end\\obj\\",
+      "outputPath": "C:\\Users\\vr700\\Desktop\\SUBIRRR\\backend\\gigu-back-end\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\vr700\\AppData\\Roaming\\NuGet\\NuGet.Config"
