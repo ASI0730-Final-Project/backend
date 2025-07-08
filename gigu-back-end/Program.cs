@@ -17,6 +17,8 @@ using Gigs.Application.CommandService;
 using Gigs.Application.QueryService;
 using Gigs.Domain;
 using Gigs.Domain.Models.Validators;
+using Gigs.Domain.Services.CommandServices;
+using Gigs.Domain.Services.QueryServices;
 using gigu_back_end.Briefcases.Application.CommandServices;
 using gigu_back_end.Briefcases.Application.QueryServices;
 using gigu_back_end.Briefcases.Domain;
@@ -83,7 +85,9 @@ builder.Services.AddScoped<IPullRepository, PullRepository>();
 builder.Services.AddScoped<IChatRepository, ChatRepository>();
 
 builder.Services.AddScoped<IGigDomainService, GigDomainService>();
-builder.Services.AddScoped<IPullDomainService, PullDomainService>();
+builder.Services.AddScoped<IPullQueryService, PullQueryService>();
+builder.Services.AddScoped<IPullCommandService, PullCommandService>();
+
 builder.Services.AddScoped<IChatDomainService, ChatDomainService>();
 
 builder.Services.AddScoped<GigCommandService>();

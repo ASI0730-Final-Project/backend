@@ -166,12 +166,12 @@
         <member name="P:gigu_back_end.Briefcases.Interfaces.REST.Resources.ProjectResource.GigLink">
             <summary>Enlace al gig o publicación asociada al proyecto.</summary>
         </member>
-        <member name="T:gigu_back_end.Gigs.Interfaces.REST.CChatController">
+        <member name="T:gigu_back_end.Gigs.Interfaces.REST.ChatController">
             <summary>
             REST Controller for managing chat messages between users.
             </summary>
         </member>
-        <member name="M:gigu_back_end.Gigs.Interfaces.REST.CChatController.Post(Gigs.Domain.Models.Commands.CreateChatCommand)">
+        <member name="M:gigu_back_end.Gigs.Interfaces.REST.ChatController.Post(Gigs.Domain.Models.Commands.CreateChatCommand)">
             <summary>
             Creates a new chat message between two users.
             </summary>
@@ -182,7 +182,7 @@
             <response code="404">Sender or receiver not found.</response>
             <response code="500">Internal server error.</response>
         </member>
-        <member name="M:gigu_back_end.Gigs.Interfaces.REST.CChatController.GetChatsByUserId(System.Int32)">
+        <member name="M:gigu_back_end.Gigs.Interfaces.REST.ChatController.GetChatsByUserId(System.Int32)">
             <summary>
             Retrieves all chat messages where the user is either sender or receiver.
             </summary>
@@ -191,7 +191,7 @@
             <response code="200">Chats retrieved successfully.</response>
             <response code="404">No chats found.</response>
         </member>
-        <member name="M:gigu_back_end.Gigs.Interfaces.REST.CChatController.GetConversation(System.Int32,System.Int32)">
+        <member name="M:gigu_back_end.Gigs.Interfaces.REST.ChatController.GetConversation(System.Int32,System.Int32)">
             <summary>
             Retrieves all chat messages exchanged between two users.
             </summary>
@@ -218,6 +218,52 @@
         </member>
         <member name="M:gigu_back_end.Shared.Infraestructure.Persistence.Repositories.UnitOfWork.CompleteAsync">
             <inheritdoc />
+        </member>
+        <member name="M:Gigs.Interfaces.REST.PullController.GetAll">
+            <summary>
+            Obtiene todos los Pulls disponibles.
+            </summary>
+            <returns>Lista de Pulls.</returns>
+        </member>
+        <member name="M:Gigs.Interfaces.REST.PullController.GetById(System.Int32)">
+            <summary>
+            Obtiene un Pull por su ID.
+            </summary>
+            <param name="id">ID del Pull</param>
+            <returns>Un Pull si existe.</returns>
+        </member>
+        <member name="M:Gigs.Interfaces.REST.PullController.GetByRole(System.String,System.Int32)">
+            <summary>
+            Obtiene Pulls filtrados por rol (seller o buyer) e ID de usuario.
+            </summary>
+            <param name="role">Rol: 'seller' o 'buyer'</param>
+            <param name="userId">ID del usuario correspondiente</param>
+            <returns>Lista de Pulls según el filtro.</returns>
+        </member>
+        <member name="M:Gigs.Interfaces.REST.PullController.Create(Gigs.Interfaces.REST.Resources.CreatePullResource)">
+            <summary>
+            Crea un nuevo Pull.
+            </summary>
+            <param name="resource">Datos para crear el Pull</param>
+            <returns>Pull creado</returns>
+        </member>
+        <member name="M:Gigs.Interfaces.REST.PullController.Update(System.Int32,Gigs.Interfaces.REST.PullController.UpdatePullRequest)">
+            <summary>
+            Actualiza el precio o estado de un Pull.
+            </summary>
+            <param name="id">ID del Pull</param>
+            <param name="request">Nuevos valores</param>
+        </member>
+        <member name="M:Gigs.Interfaces.REST.PullController.Close(System.Int32)">
+            <summary>
+            Cierra un Pull cambiando su estado a 'complete'.
+            </summary>
+            <param name="id">ID del Pull</param>
+        </member>
+        <member name="T:Gigs.Interfaces.REST.PullController.UpdatePullRequest">
+            <summary>
+            Payload para actualizar Pull.
+            </summary>
         </member>
     </members>
 </doc>
