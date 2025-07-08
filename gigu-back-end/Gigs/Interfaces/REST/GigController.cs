@@ -5,11 +5,15 @@ using Gigs.Domain.Models.Exceptions;
 using Gigs.Domain.Models.Queries;
 using Gigs.Interfaces.REST.Resources;
 using Gigs.Interfaces.REST.Transform;
+using System.ComponentModel.DataAnnotations;
 
 namespace Gigs.Interfaces.REST.Controllers
 {
+    /// <summary>
+    /// REST Controller for managing gigs (freelance jobs).
+    /// </summary>
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class GigController : ControllerBase
     {
         private readonly GigCommandService _gigCommandService;
@@ -21,8 +25,19 @@ namespace Gigs.Interfaces.REST.Controllers
             _gigQueryService = gigQueryService;
         }
 
+        /// <summary>
+        /// Creates a new gig.
+        /// </summary>
+        /// <param name="resource">Gig creation resource containing all necessary information.</param>
+        /// <returns>The created gig resource.</returns>
+        /// <response code="201">Gig created successfully.</response>
+        /// <response code="400">Validation error.</response>
+        /// <response code="500">Internal server error.</response>
         [HttpPost]
-        public async Task<ActionResult<GigResource>> CreateGig([FromBody] CreateGigResource resource)
+        [ProducesResponseType(typeof(GigResource), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> CreateGig([FromBody] CreateGigResource resource)
         {
             try
             {
@@ -38,15 +53,23 @@ namespace Gigs.Interfaces.REST.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { 
-                    message = "An error occurred while creating the gig", 
-                    details = ex.Message 
-                });
+                return Problem(detail: ex.Message, statusCode: StatusCodes.Status500InternalServerError);
             }
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<GigResource>> GetGigById(int id)
+        /// <summary>
+        /// Retrieves a specific gig by its ID.
+        /// </summary>
+        /// <param name="id">The unique identifier of the gig.</param>
+        /// <returns>The requested gig resource.</returns>
+        /// <response code="200">Gig retrieved successfully.</response>
+        /// <response code="404">Gig not found.</response>
+        /// <response code="500">Internal server error.</response>
+        [HttpGet("{id:int}")]
+        [ProducesResponseType(typeof(GigResource), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetGigById(int id)
         {
             try
             {
@@ -62,15 +85,28 @@ namespace Gigs.Interfaces.REST.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { 
-                    message = "An error occurred while retrieving the gig", 
-                    details = ex.Message 
-                });
+                return Problem(detail: ex.Message, statusCode: StatusCodes.Status500InternalServerError);
             }
         }
 
+        /// <summary>
+        /// Retrieves all gigs with filtering and pagination support.
+        /// </summary>
+        /// <param name="page">Page number (default: 1).</param>
+        /// <param name="pageSize">Number of items per page (default: 10).</param>
+        /// <param name="searchTerm">Search term for filtering by title or description.</param>
+        /// <param name="minPrice">Minimum price filter.</param>
+        /// <param name="maxPrice">Maximum price filter.</param>
+        /// <param name="maxDeliveryDays">Maximum delivery days filter.</param>
+        /// <param name="sortBy">Field to sort by (default: createdAt).</param>
+        /// <param name="descending">Sort in descending order (default: true).</param>
+        /// <returns>Paginated list of gig resources.</returns>
+        /// <response code="200">Gigs retrieved successfully.</response>
+        /// <response code="500">Internal server error.</response>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<GigResource>>> GetAllGigs(
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAllGigs(
             [FromQuery] int page = 1, 
             [FromQuery] int pageSize = 10,
             [FromQuery] string searchTerm = "",
@@ -104,15 +140,23 @@ namespace Gigs.Interfaces.REST.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { 
-                    message = "An error occurred while retrieving gigs", 
-                    details = ex.Message 
-                });
+                return Problem(detail: ex.Message, statusCode: StatusCodes.Status500InternalServerError);
             }
         }
 
-        [HttpGet("seller/{sellerId}")]
-        public async Task<ActionResult<IEnumerable<GigResource>>> GetGigsBySellerId(
+        /// <summary>
+        /// Retrieves all gigs for a specific seller.
+        /// </summary>
+        /// <param name="sellerId">The unique identifier of the seller.</param>
+        /// <param name="page">Page number (default: 1).</param>
+        /// <param name="pageSize">Number of items per page (default: 10).</param>
+        /// <returns>Paginated list of gigs for the specified seller.</returns>
+        /// <response code="200">Seller's gigs retrieved successfully.</response>
+        /// <response code="500">Internal server error.</response>
+        [HttpGet("seller/{sellerId:int}")]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetGigsBySellerId(
             int sellerId,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10)
@@ -132,15 +176,24 @@ namespace Gigs.Interfaces.REST.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { 
-                    message = "An error occurred while retrieving seller's gigs", 
-                    details = ex.Message 
-                });
+                return Problem(detail: ex.Message, statusCode: StatusCodes.Status500InternalServerError);
             }
         }
 
+        /// <summary>
+        /// Retrieves all gigs for a specific category.
+        /// </summary>
+        /// <param name="category">The category name.</param>
+        /// <param name="page">Page number (default: 1).</param>
+        /// <param name="pageSize">Number of items per page (default: 10).</param>
+        /// <param name="isResponsive">Filter for responsive gigs.</param>
+        /// <returns>Paginated list of gigs in the specified category.</returns>
+        /// <response code="200">Category gigs retrieved successfully.</response>
+        /// <response code="500">Internal server error.</response>
         [HttpGet("category/{category}")]
-        public async Task<ActionResult<IEnumerable<GigResource>>> GetGigsByCategory(
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetGigsByCategory(
             string category, 
             [FromQuery] int page = 1, 
             [FromQuery] int pageSize = 10,
@@ -166,15 +219,23 @@ namespace Gigs.Interfaces.REST.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { 
-                    message = "An error occurred while retrieving gigs by category", 
-                    details = ex.Message 
-                });
+                return Problem(detail: ex.Message, statusCode: StatusCodes.Status500InternalServerError);
             }
         }
 
+        /// <summary>
+        /// Retrieves all gigs that match the specified tags.
+        /// </summary>
+        /// <param name="tags">List of tags to filter by.</param>
+        /// <param name="page">Page number (default: 1).</param>
+        /// <param name="pageSize">Number of items per page (default: 10).</param>
+        /// <returns>Paginated list of gigs matching the specified tags.</returns>
+        /// <response code="200">Tagged gigs retrieved successfully.</response>
+        /// <response code="500">Internal server error.</response>
         [HttpGet("tags")]
-        public async Task<ActionResult<IEnumerable<GigResource>>> GetGigsByTags(
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetGigsByTags(
             [FromQuery] List<string> tags,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10)
@@ -194,15 +255,26 @@ namespace Gigs.Interfaces.REST.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { 
-                    message = "An error occurred while retrieving gigs by tags", 
-                    details = ex.Message 
-                });
+                return Problem(detail: ex.Message, statusCode: StatusCodes.Status500InternalServerError);
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<GigResource>> UpdateGig(int id, [FromBody] UpdateGigResource resource)
+        /// <summary>
+        /// Updates an existing gig.
+        /// </summary>
+        /// <param name="id">The unique identifier of the gig to update.</param>
+        /// <param name="resource">Updated gig information.</param>
+        /// <returns>The updated gig resource.</returns>
+        /// <response code="200">Gig updated successfully.</response>
+        /// <response code="400">Validation error.</response>
+        /// <response code="404">Gig not found.</response>
+        /// <response code="500">Internal server error.</response>
+        [HttpPut("{id:int}")]
+        [ProducesResponseType(typeof(GigResource), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateGig(int id, [FromBody] UpdateGigResource resource)
         {
             try
             {
@@ -222,15 +294,26 @@ namespace Gigs.Interfaces.REST.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { 
-                    message = "An error occurred while updating the gig", 
-                    details = ex.Message 
-                });
+                return Problem(detail: ex.Message, statusCode: StatusCodes.Status500InternalServerError);
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteGig(int id, [FromQuery] int sellerId)
+        /// <summary>
+        /// Deletes a gig.
+        /// </summary>
+        /// <param name="id">The unique identifier of the gig to delete.</param>
+        /// <param name="sellerId">The seller ID for validation.</param>
+        /// <returns>No content if deletion was successful.</returns>
+        /// <response code="204">Gig deleted successfully.</response>
+        /// <response code="400">Validation error.</response>
+        /// <response code="404">Gig not found.</response>
+        /// <response code="500">Internal server error.</response>
+        [HttpDelete("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteGig(int id, [FromQuery] int sellerId)
         {
             try
             {
@@ -247,15 +330,21 @@ namespace Gigs.Interfaces.REST.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { 
-                    message = "An error occurred while deleting the gig", 
-                    details = ex.Message 
-                });
+                return Problem(detail: ex.Message, statusCode: StatusCodes.Status500InternalServerError);
             }
         }
 
+        /// <summary>
+        /// Retrieves the total count of gigs in a specific category.
+        /// </summary>
+        /// <param name="category">The category name.</param>
+        /// <returns>The total count of gigs in the category.</returns>
+        /// <response code="200">Count retrieved successfully.</response>
+        /// <response code="500">Internal server error.</response>
         [HttpGet("stats/category/{category}/count")]
-        public async Task<ActionResult<int>> GetGigCountByCategory(string category)
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetGigCountByCategory(string category)
         {
             try
             {
@@ -264,15 +353,21 @@ namespace Gigs.Interfaces.REST.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { 
-                    message = "An error occurred while getting gig count", 
-                    details = ex.Message 
-                });
+                return Problem(detail: ex.Message, statusCode: StatusCodes.Status500InternalServerError);
             }
         }
 
-        [HttpGet("stats/seller/{sellerId}/count")]
-        public async Task<ActionResult<int>> GetGigCountBySellerId(int sellerId)
+        /// <summary>
+        /// Retrieves the total count of gigs for a specific seller.
+        /// </summary>
+        /// <param name="sellerId">The unique identifier of the seller.</param>
+        /// <returns>The total count of gigs for the seller.</returns>
+        /// <response code="200">Count retrieved successfully.</response>
+        /// <response code="500">Internal server error.</response>
+        [HttpGet("stats/seller/{sellerId:int}/count")]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetGigCountBySellerId(int sellerId)
         {
             try
             {
@@ -281,15 +376,21 @@ namespace Gigs.Interfaces.REST.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { 
-                    message = "An error occurred while getting seller's gig count", 
-                    details = ex.Message 
-                });
+                return Problem(detail: ex.Message, statusCode: StatusCodes.Status500InternalServerError);
             }
         }
 
-        [HttpGet("{id}/exists")]
-        public async Task<ActionResult<bool>> GigExists(int id)
+        /// <summary>
+        /// Checks if a gig exists.
+        /// </summary>
+        /// <param name="id">The unique identifier of the gig.</param>
+        /// <returns>True if the gig exists, false otherwise.</returns>
+        /// <response code="200">Existence check completed successfully.</response>
+        /// <response code="500">Internal server error.</response>
+        [HttpGet("{id:int}/exists")]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GigExists(int id)
         {
             try
             {
@@ -298,10 +399,7 @@ namespace Gigs.Interfaces.REST.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { 
-                    message = "An error occurred while checking gig existence", 
-                    details = ex.Message 
-                });
+                return Problem(detail: ex.Message, statusCode: StatusCodes.Status500InternalServerError);
             }
         }
     }
