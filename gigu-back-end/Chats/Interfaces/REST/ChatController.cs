@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Gigs.Domain.Models.Commands;
-using Gigs.Domain.Services;
-using Gigs.Interfaces.REST.Resources;
-using Gigs.Interfaces.REST.Transform;
+using Chats.Domain.Models.Commands;
+using Chats.Domain.Services;
+using Chats.Interfaces.REST.Resources;
+using Chats.Interfaces.REST.Transform;
 using Microsoft.AspNetCore.Mvc;
 
-namespace gigu_back_end.Gigs.Interfaces.REST;
+namespace Chats.Interfaces.REST;
 
 /// <summary>
 /// REST Controller for managing chat messages between users.

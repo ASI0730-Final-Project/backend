@@ -31,6 +31,8 @@
 
     <ItemGroup>
       <Folder Include="Briefcases\Interfaces\SOAP\" />
+      <Folder Include="Chats\Application\CommandService\" />
+      <Folder Include="Chats\Domain\Models\Exceptions\" />
     </ItemGroup>
 
 </Project>

@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using Gigs.Domain.Models.Commands;
+using Chats.Domain.Models.Commands;
 
-namespace Gigs.Domain.Models.Validators;
+namespace Chats.Domain.Models.Validators;
 
 public class CreateChatCommandValidator : AbstractValidator<CreateChatCommand>
 {

@@ -1,7 +1,7 @@
-﻿using Gigs.Domain.Models.Entities;
-using Gigs.Interfaces.REST.Resources;
+﻿using Chats.Domain.Models.Entities;
+using Chats.Interfaces.REST.Resources;
 
-namespace Gigs.Interfaces.REST.Transform;
+namespace Chats.Interfaces.REST.Transform;
 
 public static class ChatResourceFromEntityAssembler
 {

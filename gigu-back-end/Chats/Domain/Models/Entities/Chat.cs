@@ -1,6 +1,6 @@
 ﻿using gigu_back_end.Shared.Domain.Model.Entities;
 
-namespace Gigs.Domain.Models.Entities;
+namespace Chats.Domain.Models.Entities;
 
 public class Chat : BaseEntity
     {
