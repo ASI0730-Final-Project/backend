@@ -9,8 +9,6 @@ namespace Gigs.Domain.Models.Entities
 
         [Required(ErrorMessage = "El ID del vendedor es obligatorio.")]
         public int SellerId { get; set; }
-
-        // El comprador es opcional hasta que se cierre la subasta
         public int? BuyerId { get; set; }
 
         [Required(ErrorMessage = "El ID del gig es obligatorio.")]
@@ -27,11 +25,9 @@ namespace Gigs.Domain.Models.Entities
         [Required(ErrorMessage = "El estado es obligatorio.")]
         [StringLength(20, ErrorMessage = "El estado no debe superar los 20 caracteres.")]
         public string State { get; set; } = "abierta";
-
-        // Constructor por defecto requerido por EF Core
+        
         public Pull() {}
-
-        // Constructor utilizado para abrir una nueva subasta
+        
         public Pull(int sellerId, int gigId, decimal priceInit)
         {
             SellerId = sellerId;

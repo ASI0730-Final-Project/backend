@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "olw75bpRjLY=",
+  "dgSpecHash": "v3nnk8T+F2s=",
   "success": true,
-  "projectFilePath": "C:\\Users\\vr700\\Desktop\\SUBIRRR\\backend\\gigu-back-end\\gigu-back-end.csproj",
+  "projectFilePath": "C:\\Users\\vr700\\Desktop\\BACKEND CHATIS\\backend-main\\gigu-back-end\\gigu-back-end.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\vr700\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\vr700\\.nuget\\packages\\bouncycastle.cryptography\\2.5.1\\bouncycastle.cryptography.2.5.1.nupkg.sha512",

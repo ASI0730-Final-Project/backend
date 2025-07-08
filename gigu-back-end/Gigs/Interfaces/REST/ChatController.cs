@@ -12,12 +12,12 @@ namespace gigu_back_end.Gigs.Interfaces.REST;
 /// </summary>
 [Route("api/v1/[controller]")]
 [ApiController]
-public class CChatController : ControllerBase
+public class ChatController : ControllerBase
 {
     private readonly IChatDomainService _chatDomainService;
     private readonly IChatQueryService _chatQueryService;
 
-    public CChatController(IChatDomainService chatDomainService, IChatQueryService chatQueryService)
+    public ChatController(IChatDomainService chatDomainService, IChatQueryService chatQueryService)
     {
         _chatDomainService = chatDomainService;
         _chatQueryService = chatQueryService;
