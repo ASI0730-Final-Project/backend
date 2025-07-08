@@ -1,10 +1,10 @@
-﻿using Gigs.Domain;
-using Gigs.Domain.Models.Entities;
-using Gigs.Domain.Models.Commands;
-using Gigs.Domain.Services;
+﻿using Chats.Domain;
+using Chats.Domain.Models.Entities;
+using Chats.Domain.Models.Commands;
+using Chats.Domain.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gigs.Application.QueryService;
+namespace Chats.Application.QueryService;
 
 public class ChatQueryService(IChatRepository chatRepository) : IChatQueryService
 {

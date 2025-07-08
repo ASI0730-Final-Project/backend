@@ -1,5 +1,6 @@
 ﻿using gigu_back_end.User.Domain.Models.Entities;
 using Gigs.Domain.Models.Entities;
+using Chats.Domain.Models.Entities;
 using gigu_back_end.Briefcases.Domain.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 

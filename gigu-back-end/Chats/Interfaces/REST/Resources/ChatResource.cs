@@ -1,4 +1,4 @@
-﻿namespace Gigs.Interfaces.REST.Resources;
+﻿namespace Chats.Interfaces.REST.Resources;
 
 public record ChatResource(
     int Id,

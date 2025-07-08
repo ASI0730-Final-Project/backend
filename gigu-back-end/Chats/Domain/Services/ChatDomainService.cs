@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
-using Gigs.Domain.Models.Commands;
-using Gigs.Domain.Models.Entities;
+using Chats.Domain.Models.Commands;
+using Chats.Domain.Models.Entities;
 using gigu_back_end.Shared.Domain;
 using gigu_back_end.User.Domain;
 
-namespace Gigs.Domain.Services;
+namespace Chats.Domain.Services;
 
 public class ChatDomainService(
     IChatRepository chatRepository,

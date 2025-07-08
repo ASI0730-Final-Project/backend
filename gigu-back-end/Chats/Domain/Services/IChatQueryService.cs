@@ -1,7 +1,7 @@
-﻿using Gigs.Domain.Models.Commands;
-using Gigs.Domain.Models.Entities;
+﻿using Chats.Domain.Models.Commands;
+using Chats.Domain.Models.Entities;
 
-namespace Gigs.Domain.Services;
+namespace Chats.Domain.Services;
 
 public interface IChatQueryService
 {

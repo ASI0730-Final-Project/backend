@@ -1,10 +1,10 @@
-﻿using Gigs.Domain;
-using Gigs.Domain.Models.Entities;
+﻿using Chats.Domain;
+using Chats.Domain.Models.Entities;
 using gigu_back_end.Shared.Infraestructure.Persistence.Repositories;
 using gigu_back_end.Shared.Infrastructure.Persistence.Configuration;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gigs.Infrastructure.Persistence.EFC.Repositories;
+namespace Chats.Infrastructure.Persistence.EFC.Repositories;
 
 public class ChatRepository : BaseRepository<Chat>, IChatRepository
 {

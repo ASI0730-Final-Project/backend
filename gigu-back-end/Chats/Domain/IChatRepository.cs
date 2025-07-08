@@ -1,7 +1,7 @@
-﻿using Gigs.Domain.Models.Entities;
+﻿using Chats.Domain.Models.Entities;
 using gigu_back_end.Shared.Domain;
 
-namespace Gigs.Domain;
+namespace Chats.Domain;
 
 public interface IChatRepository : IBaseRepository<Chat>
 {

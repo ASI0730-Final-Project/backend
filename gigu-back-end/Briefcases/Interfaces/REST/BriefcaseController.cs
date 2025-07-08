@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace gigu_back_end.Briefcases.Interfaces.REST;
 
+/// <summary>
+/// REST Controller for managing briefcases (portfolios).
+/// </summary>
 [Route("api/v1/[controller]")]
 [ApiController]
 public class BriefcaseController(IBriefcaseQueryService briefcaseQueryService, IBriefcaseCommandService briefcaseCommandService) : ControllerBase
@@ -17,55 +20,83 @@ public class BriefcaseController(IBriefcaseQueryService briefcaseQueryService, I
     private readonly IBriefcaseCommandService _briefcaseCommandService = briefcaseCommandService;
 
     /// <summary>
-    /// Obtiene todos los portafolios.
+    /// Retrieves all briefcases.
     /// </summary>
-    /// <returns>Lista de portafolios.</returns>
+    /// <returns>List of all briefcase resources.</returns>
+    /// <response code="200">Briefcases retrieved successfully.</response>
+    /// <response code="404">No briefcases found.</response>
+    /// <response code="500">Internal server error.</response>
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IEnumerable<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAsync()
     {
-        var result = await _briefcaseQueryService.Handle(new GetAllBriefcasesQuery());
-        return result.Any()
-            ? Ok(result.Select(BriefcaseResourceFromEntityAssembler.ToResourceFromEntity))
-            : NotFound("No briefcases found.");
+        try
+        {
+            var result = await _briefcaseQueryService.Handle(new GetAllBriefcasesQuery());
+            return result.Any()
+                ? Ok(result.Select(BriefcaseResourceFromEntityAssembler.ToResourceFromEntity))
+                : NotFound(new { message = "No briefcases found." });
+        }
+        catch (Exception ex)
+        {
+            return Problem(detail: ex.Message, statusCode: StatusCodes.Status500InternalServerError);
+        }
     }
 
     /// <summary>
-    /// Obtiene un portafolio por el ID del vendedor.
+    /// Retrieves a briefcase by seller ID.
     /// </summary>
-    /// <param name="sellerId">ID del vendedor.</param>
-    /// <returns>Portafolio encontrado.</returns>
+    /// <param name="sellerId">The unique identifier of the seller.</param>
+    /// <returns>The briefcase resource for the specified seller.</returns>
+    /// <response code="200">Briefcase retrieved successfully.</response>
+    /// <response code="400">Invalid seller ID.</response>
+    /// <response code="404">Briefcase not found for the specified seller.</response>
+    /// <response code="500">Internal server error.</response>
     [HttpGet("by-seller/{sellerId:int}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetBySellerId(int sellerId)
     {
-        if (sellerId <= 0) return BadRequest("Invalid seller ID.");
+        if (sellerId <= 0) 
+            return BadRequest(new { message = "Invalid seller ID." });
 
-        var result = await _briefcaseQueryService.Handle(new GetBriefcaseBySellerIdQuery(sellerId));
-        return result != null
-            ? Ok(BriefcaseResourceFromEntityAssembler.ToResourceFromEntity(result))
-            : NotFound($"Briefcase for seller ID {sellerId} not found.");
+        try
+        {
+            var result = await _briefcaseQueryService.Handle(new GetBriefcaseBySellerIdQuery(sellerId));
+            return result != null
+                ? Ok(BriefcaseResourceFromEntityAssembler.ToResourceFromEntity(result))
+                : NotFound(new { message = $"Briefcase for seller ID {sellerId} not found." });
+        }
+        catch (Exception ex)
+        {
+            return Problem(detail: ex.Message, statusCode: StatusCodes.Status500InternalServerError);
+        }
     }
 
-
-
     /// <summary>
-    /// Crea un nuevo portafolio.
+    /// Creates a new briefcase.
     /// </summary>
-    /// <param name="command">Comando para crear portafolio.</param>
-    /// <returns>Estado de creación.</returns>
+    /// <param name="command">Briefcase creation command containing all necessary information.</param>
+    /// <returns>Status indicating the result of the creation.</returns>
+    /// <response code="201">Briefcase created successfully.</response>
+    /// <response code="400">Invalid request or project not found.</response>
+    /// <response code="409">Briefcase with the same name already exists.</response>
+    /// <response code="422">Validation error.</response>
+    /// <response code="500">Internal server error.</response>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
-    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status422UnprocessableEntity)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Post([FromBody] CreateBriefcaseCommand command)
     {
-        if (command == null) return BadRequest("Briefcase name cannot be empty.");
+        if (command == null) 
+            return BadRequest(new { message = "Briefcase command cannot be null." });
 
         try
         {
@@ -74,19 +105,19 @@ public class BriefcaseController(IBriefcaseQueryService briefcaseQueryService, I
         }
         catch (ValidationException ex)
         {
-            return UnprocessableEntity(ex.Message);
+            return UnprocessableEntity(new { message = ex.Message });
         }
         catch (ArgumentException ex)
         {
-            return UnprocessableEntity(ex.Message);
+            return UnprocessableEntity(new { message = ex.Message });
         }
         catch (NotProjectFoundException ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new { message = ex.Message });
         }
         catch (DuplicateNameException)
         {
-            return Conflict("A briefcase with the same name already exists.");
+            return Conflict(new { message = "A briefcase with the same name already exists." });
         }
         catch (Exception ex)
         {
@@ -94,14 +125,25 @@ public class BriefcaseController(IBriefcaseQueryService briefcaseQueryService, I
         }
     }
 
-   
+    /// <summary>
+    /// Updates an existing briefcase.
+    /// </summary>
+    /// <param name="id">The unique identifier of the briefcase to update.</param>
+    /// <param name="command">Updated briefcase information.</param>
+    /// <returns>Status indicating the result of the update.</returns>
+    /// <response code="200">Briefcase updated successfully.</response>
+    /// <response code="400">Invalid briefcase ID.</response>
+    /// <response code="404">Briefcase not found.</response>
+    /// <response code="500">Internal server error.</response>
     [HttpPut("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Put(int id, [FromBody] UpdateBriefcaseCommand command)
     {
-        if (id <= 0) return BadRequest("Invalid briefcase ID.");
+        if (id <= 0) 
+            return BadRequest(new { message = "Invalid briefcase ID." });
 
         try
         {
@@ -115,17 +157,23 @@ public class BriefcaseController(IBriefcaseQueryService briefcaseQueryService, I
     }
 
     /// <summary>
-    /// Elimina un portafolio por su ID.
+    /// Deletes a briefcase.
     /// </summary>
-    /// <param name="id">ID del portafolio.</param>
-    /// <returns>Sin contenido si se elimina correctamente.</returns>
+    /// <param name="id">The unique identifier of the briefcase to delete.</param>
+    /// <returns>No content if deletion was successful.</returns>
+    /// <response code="204">Briefcase deleted successfully.</response>
+    /// <response code="400">Invalid briefcase ID.</response>
+    /// <response code="404">Briefcase not found.</response>
+    /// <response code="500">Internal server error.</response>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Delete(int id)
     {
-        if (id <= 0) return BadRequest("Invalid briefcase ID.");
+        if (id <= 0) 
+            return BadRequest(new { message = "Invalid briefcase ID." });
 
         try
         {
