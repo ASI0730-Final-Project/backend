@@ -90,30 +90,47 @@ public class UserController(IUserQueryService userQueryService, IUserCommandServ
     }
 
     /// <summary>
-    /// Updates an existing user.
+    /// Updates a user's basic information (Name, Lastname, Email).
     /// </summary>
-    /// <param name="id">The unique identifier of the user to update.</param>
-    /// <param name="command">Updated user information.</param>
+    /// <param name="id">The ID of the user to update.</param>
+    /// <param name="command">The updated user information.</param>
     /// <returns>Status indicating the result of the update.</returns>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     PUT /api/v1/user/3
+    ///     {
+    ///         "name": "John",
+    ///         "lastname": "Doe",
+    ///         "email": "john.doe@example.com"
+    ///     }
+    ///
+    /// </remarks>
     /// <response code="200">User updated successfully.</response>
-    /// <response code="400">Bad request or validation error.</response>
+    /// <response code="400">Bad request due to invalid input.</response>
     /// <response code="404">User not found.</response>
     /// <response code="500">Internal server error.</response>
     [HttpPut("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateUserCommand command)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         try
         {
-            await _userCommandService.Handle(command, id);
-            return Ok();
+            var result = await _userCommandService.Handle(command, id);
+            if (!result)
+                return NotFound(new { message = "User not found" });
+
+            return Ok(new { message = "User updated successfully" });
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            return Problem(detail: e.Message);
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Error updating user", detail = ex.Message });
         }
     }
 

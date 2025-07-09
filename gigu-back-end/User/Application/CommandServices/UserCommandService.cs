@@ -56,16 +56,15 @@ namespace gigu_back_end.User.Application.CommandServices
             user.Name = command.Name;
             user.Lastname = command.Lastname;
             user.Email = command.Email;
-            user.Password = command.Password;
-            user.Role = command.Role;
-            user.Image = command.Image;
+    
             user.ModifiedDate = DateTime.UtcNow;
-            user.UpdatedUserId = 87;
+            user.UpdatedUserId = 87; // Puedes ajustar esto según el usuario logueado
 
             userRepository.Update(user);
             await unitOfWork.CompleteAsync();
             return true;
         }
+
         
         public async Task<Domain.Models.Entities.User> Handle(SignUpCommand command)
         {
