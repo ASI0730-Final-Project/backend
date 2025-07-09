@@ -8,11 +8,7 @@ public interface IUserCommandService
 {
     Task<Models.Entities.User> Handle(CreateUserCommand command);
     Task<bool> Handle(DeleteUserCommand command);
-    Task<bool> Handle(UpdateUserCommand command, int id);
-    
+    Task<bool> Handle(UpdateUserCommand command, int id); 
     Task<Models.Entities.User> Handle(SignUpCommand command);
-    
     Task<string> Handle(LoginCommand loginCommand);
-    
-    
 }

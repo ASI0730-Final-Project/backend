@@ -56,9 +56,7 @@ namespace gigu_back_end.User.Application.CommandServices
             user.Name = command.Name;
             user.Lastname = command.Lastname;
             user.Email = command.Email;
-            user.Password = command.Password;
-            user.Role = command.Role;
-            user.Image = command.Image;
+    
             user.ModifiedDate = DateTime.UtcNow;
             user.UpdatedUserId = 87;
 
@@ -66,6 +64,7 @@ namespace gigu_back_end.User.Application.CommandServices
             await unitOfWork.CompleteAsync();
             return true;
         }
+
         
         public async Task<Domain.Models.Entities.User> Handle(SignUpCommand command)
         {
@@ -95,8 +94,6 @@ namespace gigu_back_end.User.Application.CommandServices
             var user = await userRepository.GetByEmailAsync(command.Email);
             if (user == null || !hashService.VerifyPassword(command.Password, user.Password))
                 throw new InvalidCredentialsException();
-
-            //coinciden
 
             var jwtToken = jwtEncryptService.Encrypt(user);
 
