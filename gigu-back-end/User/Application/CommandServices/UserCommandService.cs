@@ -58,7 +58,7 @@ namespace gigu_back_end.User.Application.CommandServices
             user.Email = command.Email;
     
             user.ModifiedDate = DateTime.UtcNow;
-            user.UpdatedUserId = 87; // Puedes ajustar esto según el usuario logueado
+            user.UpdatedUserId = 87;
 
             userRepository.Update(user);
             await unitOfWork.CompleteAsync();
@@ -94,8 +94,6 @@ namespace gigu_back_end.User.Application.CommandServices
             var user = await userRepository.GetByEmailAsync(command.Email);
             if (user == null || !hashService.VerifyPassword(command.Password, user.Password))
                 throw new InvalidCredentialsException();
-
-            //coinciden
 
             var jwtToken = jwtEncryptService.Encrypt(user);
 
